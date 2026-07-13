@@ -1,0 +1,9 @@
+{
+  "name": "AgroPix BaaS Platform",
+  "description": "A comprehensive fintech & agritech platform MVP featuring digital grain wallet, ledger-based finance, and NFe emission.",
+  "requestFramePermissions": [
+    "camera",
+    "geolocation"
+  ],
+  "majorCapabilities": []
+}
