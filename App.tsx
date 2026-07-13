@@ -39,7 +39,7 @@ export default function App() {
         <div className="mb-8 text-center">
           <div className="flex items-center justify-center gap-3 mb-2">
             <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-lg shadow-green-500/20 p-2">
-              <img src="/logo-icon.png" alt="AgroPix" className="w-full h-full object-contain" />
+              <img src={`${import.meta.env.BASE_URL}logo-icon.png`} alt="AgroPix" className="w-full h-full object-contain" />
             </div>
             <h1 className="text-4xl font-bold text-white tracking-tight">AgroPix</h1>
           </div>

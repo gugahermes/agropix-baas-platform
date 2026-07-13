@@ -26,7 +26,7 @@ export const Layout: React.FC<LayoutProps> = ({ user, onLogout, children, active
           <div className="flex items-center gap-4">
             <button onClick={goHome} className="flex items-center gap-3 active:scale-95 transition-transform">
               <div className="w-9 h-9 bg-slate-900 rounded-xl flex items-center justify-center shadow-lg p-1.5">
-                <img src="/logo-icon.png" alt="AgroPix" className="w-full h-full object-contain" />
+                <img src={`${import.meta.env.BASE_URL}logo-icon.png`} alt="AgroPix" className="w-full h-full object-contain" />
               </div>
               <div className="hidden sm:flex flex-col leading-none text-left">
                 <span className="font-black text-slate-900 tracking-tight">AgroPix</span>
