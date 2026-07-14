@@ -10,12 +10,37 @@ import {
 // Views
 import { IntegrationsView } from './IntegrationsView';
 import { BaaSOrchestratorConsole } from './BaaSEngineConfigView';
-import { baasEngine, ledgerService } from '../../services/ledgerService'; 
+import { baasEngine, ledgerService } from '../../services/ledgerService';
 import { coreService } from '../../services/coreService';
 import { baasOrchestratorService } from '../../services/baasOrchestratorService';
-import { fiscalEngineService } from '../../services/nfeService'; 
+import { fiscalEngineService } from '../../services/nfeService';
+import { integrationService } from '../../services/integrationService';
 import { UnitConversionService } from '../../services/unitConversionService';
-import { Currency, Tenant, SiloOperationMode } from '../../types';
+import { Currency, Tenant, SiloOperationMode, IntegrationStatus, IntegrationType } from '../../types';
+
+const SILO_SYNC_LABELS: Record<string, string> = {
+  HEALTHY: 'Saudável',
+  DIVERGENT: 'Divergente',
+  ERROR: 'Erro',
+  PENDING: 'Pendente',
+};
+
+const RAIL_STATUS_LABELS: Record<string, string> = {
+  UP: 'Ativo',
+  DOWN: 'Fora do Ar',
+  SLOW: 'Degradado',
+  MAINTENANCE: 'Manutenção',
+  DISABLED: 'Desativado',
+  ACTIVE: 'Ativo',
+};
+
+const INTEGRATION_TYPE_LABELS: Record<string, string> = {
+  BANK: 'Banco',
+  PIX: 'Pix',
+  DICT: 'DICT',
+  NFE: 'NF-e',
+  OTHER: 'Outro',
+};
 
 const NFE_STATUS_LABELS: Record<string, string> = {
   DRAFT: 'RASCUNHO',
@@ -243,13 +268,98 @@ const MasterSiloDetailView = ({ siloId, onBack }: { siloId: string, onBack: () =
     )
 }
 
-const MasterIntegrationGovernance = () => (
-    <div className="p-10 text-center text-slate-400 border-2 border-dashed border-slate-200 rounded-xl py-20">
-        <Zap size={48} className="mx-auto mb-4 opacity-20"/>
-        <h3 className="text-lg font-bold">Governança de Integrações</h3>
-        <p>Visão agregada de alertas, divergências e health-check de todos os conectores de silos.</p>
-    </div>
-)
+const MasterIntegrationGovernance = () => {
+    const tenants = coreService.getTenants();
+    const providers = integrationService.getAll();
+    const nfeDocs = fiscalEngineService.getAll();
+
+    const siloAlerts = tenants.filter(t => t.integrationSettings.status !== 'HEALTHY');
+    const railAlerts = providers.filter(p => p.status !== IntegrationStatus.UP && p.status !== IntegrationStatus.ACTIVE);
+    const nfeRejected = nfeDocs.filter(d => d.status === 'REJECTED');
+    const totalAlerts = siloAlerts.length + railAlerts.length + nfeRejected.length;
+
+    const StatusDot = ({ ok }: { ok: boolean }) => (
+        <div className={`w-2 h-2 rounded-full ${ok ? 'bg-sicredi-500' : 'bg-red-500 animate-pulse'}`} />
+    );
+
+    return (
+        <div className="space-y-8 animate-in fade-in duration-500">
+            <div className="flex justify-between items-end">
+                <div>
+                    <h2 className="text-2xl font-black text-slate-800">Governança de Integrações</h2>
+                    <p className="text-slate-500 font-medium">Visão agregada de alertas, divergências e health-check de todos os conectores.</p>
+                </div>
+                <div className={`px-4 py-2 rounded-xl font-black text-xs uppercase tracking-widest ${totalAlerts === 0 ? 'bg-sicredi-100 text-sicredi-700' : 'bg-red-100 text-red-700'}`}>
+                    {totalAlerts === 0 ? 'Tudo Operando' : `${totalAlerts} Alerta(s) Ativo(s)`}
+                </div>
+            </div>
+
+            <div className="grid grid-cols-3 gap-6">
+                <StatCardMini label="Silos com Divergência" value={`${siloAlerts.length} / ${tenants.length}`} />
+                <StatCardMini label="Rails Financeiros com Falha" value={`${railAlerts.length} / ${providers.length}`} />
+                <StatCardMini label="NF-e Rejeitadas" value={`${nfeRejected.length} / ${nfeDocs.length}`} />
+            </div>
+
+            <div className="grid grid-cols-2 gap-6">
+                <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div className="p-4 border-b border-slate-100 bg-slate-50">
+                        <h3 className="font-black text-sm text-slate-700 uppercase tracking-wide">Conectores de Silo (ERP)</h3>
+                    </div>
+                    <div className="divide-y divide-slate-100">
+                        {tenants.map(t => (
+                            <div key={t.id} className="p-4 flex items-center justify-between hover:bg-slate-50">
+                                <div>
+                                    <p className="font-bold text-slate-800 text-sm">{t.name}</p>
+                                    <p className="text-[10px] text-slate-400 font-mono uppercase">{t.integrationSettings.protocol} • {t.integrationSettings.lastSyncAt ? new Date(t.integrationSettings.lastSyncAt).toLocaleString('pt-BR') : 'sem sync'}</p>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <StatusDot ok={t.integrationSettings.status === 'HEALTHY'} />
+                                    <span className="text-[10px] font-black uppercase text-slate-600">{SILO_SYNC_LABELS[t.integrationSettings.status] || t.integrationSettings.status}</span>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div className="p-4 border-b border-slate-100 bg-slate-50">
+                        <h3 className="font-black text-sm text-slate-700 uppercase tracking-wide">Rails Bancários & Fiscais</h3>
+                    </div>
+                    <div className="divide-y divide-slate-100">
+                        {providers.map(p => {
+                            const ok = p.status === IntegrationStatus.UP || p.status === IntegrationStatus.ACTIVE;
+                            return (
+                                <div key={p.id} className="p-4 flex items-center justify-between hover:bg-slate-50">
+                                    <div>
+                                        <p className="font-bold text-slate-800 text-sm">{p.name}</p>
+                                        <p className="text-[10px] text-slate-400 font-mono uppercase">{INTEGRATION_TYPE_LABELS[p.type] || p.type} • {p.environment}</p>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <StatusDot ok={ok} />
+                                        <span className="text-[10px] font-black uppercase text-slate-600">{RAIL_STATUS_LABELS[p.status] || p.status}</span>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+            </div>
+
+            {totalAlerts > 0 && (
+                <div className="bg-red-50 border border-red-200 rounded-xl p-6 space-y-2">
+                    <h3 className="font-black text-sm text-red-700 uppercase tracking-wide flex items-center gap-2">
+                        <AlertTriangle size={16} /> Divergências Detectadas
+                    </h3>
+                    <ul className="text-sm text-red-800 space-y-1 list-disc list-inside">
+                        {siloAlerts.map(t => <li key={t.id}>Silo <strong>{t.name}</strong>: sync {SILO_SYNC_LABELS[t.integrationSettings.status]?.toLowerCase()}</li>)}
+                        {railAlerts.map(p => <li key={p.id}>Rail <strong>{p.name}</strong>: {RAIL_STATUS_LABELS[p.status]?.toLowerCase()}</li>)}
+                        {nfeRejected.map(d => <li key={d.id}>NF-e <strong>{d.accessKey.slice(0, 20)}…</strong> rejeitada pela SEFAZ</li>)}
+                    </ul>
+                </div>
+            )}
+        </div>
+    );
+}
 
 const StatCardMini = ({ label, value }: any) => (
     <div className="bg-white px-4 py-2 rounded-xl border shadow-sm">

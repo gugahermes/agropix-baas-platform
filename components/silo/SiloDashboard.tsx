@@ -7,6 +7,12 @@ import { ledgerService } from '../../services/ledgerService';
 import { UnitConversionService } from '../../services/unitConversionService';
 import { quotationService } from '../../services/quotationService';
 import { baasOrchestratorService } from '../../services/baasOrchestratorService';
+
+const COMMODITY_LABELS: Record<string, string> = {
+  [CommodityType.SOYBEAN]: 'Soja',
+  [CommodityType.CORN]: 'Milho',
+  [CommodityType.WHEAT]: 'Trigo',
+};
 import { 
   LayoutDashboard, Users, FileText, Truck, Database, Settings, 
   Search, Plus, Scale, CheckCircle, XCircle, AlertCircle,
@@ -284,7 +290,7 @@ const CommodityManagementTab = ({ silo, onRefresh }: { silo: Tenant, onRefresh: 
                         </div>
                         <div className="flex justify-between items-start">
                              <div>
-                                <span className="bg-slate-100 text-slate-500 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">{c.id}</span>
+                                <span className="bg-slate-100 text-slate-500 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">{COMMODITY_LABELS[c.id] || c.id}</span>
                                 <h3 className="text-2xl font-black text-slate-900 mt-2">{c.name}</h3>
                              </div>
                              <button className="text-slate-400 hover:text-slate-900 transition-colors"><Settings size={20}/></button>
