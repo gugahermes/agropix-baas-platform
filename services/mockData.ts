@@ -257,7 +257,7 @@ export const INITIAL_NFES: NFeDocument[] = [
     accessKey: '51230112345678000199550010000000011000000015',
     protocol: '151230000001234',
     producerId: 'u1',
-    siloId: 'u2',
+    siloId: 't1',
     commodity: CommodityType.SOYBEAN,
     estimatedWeightKg: 30000,
     finalWeightKg: 30000,

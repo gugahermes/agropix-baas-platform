@@ -1,7 +1,19 @@
 
 import { NFeDocument, NFeStatus, TransactionType, TransactionSource, Currency, CommodityType, GrainUnit, TransactionStatus } from '../types';
-import { INITIAL_NFES, MOCK_ACCOUNTS } from './mockData';
+import { INITIAL_NFES, MOCK_ACCOUNTS, MOCK_TENANTS, MOCK_USERS } from './mockData';
 import { ledgerService } from './ledgerService';
+import { focusNfeService, EnderecoFiscal } from './focusNfeService';
+
+// Endereço de referência para emitente/destinatário — o mock não tem logradouro/CEP,
+// só cidade/UF. Placeholder até existir cadastro real de endereço fiscal.
+const enderecoMock = (municipio: string, uf: string): EnderecoFiscal => ({
+  logradouro: 'Rodovia BR (a definir)',
+  numero: 'S/N',
+  bairro: 'Zona Rural',
+  municipio,
+  uf,
+  cep: uf === 'MT' ? '78890000' : '98570000',
+});
 
 let nfeDatabase: NFeDocument[] = [...INITIAL_NFES];
 
@@ -25,14 +37,54 @@ export const fiscalEngineService = {
 
   // --- ACTIONS ---
 
-  createPreliminaryNFe: (nfe: Omit<NFeDocument, 'id' | 'status' | 'issuedAt' | 'accessKey' | 'protocol'>): NFeDocument => {
+  createPreliminaryNFe: async (nfe: Omit<NFeDocument, 'id' | 'status' | 'issuedAt' | 'accessKey' | 'protocol'>): Promise<NFeDocument> => {
+    const id = `nfe_${Date.now()}`;
+
+    const producer = MOCK_USERS.find(u => u.id === nfe.producerId);
+    const silo = MOCK_TENANTS.find(t => t.id === nfe.siloId);
+
+    let focusResult;
+    try {
+      focusResult = await focusNfeService.emitir({
+        ref: id,
+        commodity: nfe.commodity,
+        quantidadeKg: nfe.estimatedWeightKg,
+        emitente: {
+          cpf: producer?.document || '00000000000',
+          nome: producer?.name || 'Produtor Rural',
+          endereco: enderecoMock(silo?.city || 'Sorriso', silo?.state || 'MT'),
+        },
+        destinatario: {
+          cnpj: silo?.document || '00000000000000',
+          nome: silo?.name || 'Silo',
+          endereco: enderecoMock(silo?.city || 'Sorriso', silo?.state || 'MT'),
+        },
+      });
+    } catch (err) {
+      // Não deixa o produtor travado no campo se a integração fiscal falhar de vez —
+      // a NF-e fica marcada como rejeitada para retentativa, mas o app continua funcionando.
+      focusResult = {
+        mode: 'SIMULADO' as const,
+        ref: id,
+        status: 'erro_autorizacao' as const,
+        mensagemSefaz: (err as Error).message,
+      };
+    }
+
     const newNFe: NFeDocument = {
       ...nfe,
-      id: `nfe_${Date.now()}`,
-      status: NFeStatus.ISSUED, 
+      id,
+      status: focusResult.status === 'erro_autorizacao' ? NFeStatus.REJECTED : NFeStatus.ISSUED,
       issuedAt: new Date().toISOString(),
-      accessKey: `512301${Date.now()}12345678000199550010000000011000000000`, 
-      protocol: `${Date.now()}`,
+      accessKey: focusResult.chaveNFe,
+      protocol: focusResult.numero,
+      focusRef: focusResult.ref,
+      emissionMode: focusResult.mode,
+      sefazStatusRaw: focusResult.statusSefaz,
+      sefazMessage: focusResult.mensagemSefaz,
+      danfeUrl: focusResult.caminhoDanfe,
+      xmlUrl: focusResult.caminhoXml,
+      rejectionErrors: focusResult.erros,
     };
     nfeDatabase.push(newNFe);
 
@@ -43,7 +95,7 @@ export const fiscalEngineService = {
       currency: Currency.SYSTEM,
       direction: TransactionType.AUDIT,
       source: TransactionSource.INTERNAL_TRANSFER,
-      description: `NFE_ISSUED: NF ${newNFe.id} em kg`,
+      description: `NFE_ISSUED: NF ${newNFe.id} em kg (${focusResult.mode})`,
     });
 
     return newNFe;

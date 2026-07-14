@@ -23,6 +23,17 @@ npm install
 npm run dev
 ```
 
+## Emissão de NF-e (Focus NFe)
+
+A tela "Emitir NF-e" do Produtor Rural já integra com o contrato real da [API da Focus NFe](https://doc.focusnfe.com.br) (autenticação, payload de emissão modelo 55/NFP-e, parsing de resposta). Sem um token configurado, roda em **modo simulado** — mesma forma de resposta da API real, incluindo chave de acesso de 44 dígitos com dígito verificador calculado de verdade (módulo 11), só que sem chamar a SEFAZ.
+
+Para testar com a API real de homologação:
+
+1. Crie uma conta gratuita em [focusnfe.com.br](https://focusnfe.com.br) e gere um token de homologação.
+2. Copie `.env.local.example` para `.env.local` e preencha `VITE_FOCUS_NFE_TOKEN`.
+
+⚠️ **Isso é só para teste em homologação.** Variáveis `VITE_*` são embutidas no bundle JS público — qualquer um consegue ler o token pelo DevTools. Para produção, o token precisa morar num backend/proxy (ex.: uma serverless function) que nunca o expõe ao navegador. O código já isola toda chamada HTTP num único ponto (`focusNfeService.ts`) para facilitar essa troca depois.
+
 ## Estado do protótipo
 
 100% frontend, sem backend nem base de dados persistente — pensado como especificação funcional clicável, não como base de código para produção. Roadmap completo (o que falta para um MVP real com silo piloto) documentado internamente no vault de projeto.

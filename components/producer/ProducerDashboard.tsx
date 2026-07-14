@@ -458,31 +458,73 @@ const PayWithGrainView = ({ user, onBack, refresh }: any) => {
 const NfeCreateView = ({ onBack, refresh, user }: any) => {
     const [kg, setKg] = useState('');
     const [plate, setPlate] = useState('');
+    const [status, setStatus] = useState<'IDLE' | 'TRANSMITTING' | 'DONE'>('IDLE');
+    const [result, setResult] = useState<any>(null);
 
-    const handleEmit = () => {
-        if(!kg || !plate) return;
+    const handleEmit = async () => {
+        if (!kg || !plate) return;
         const kgNum = Math.round(parseFloat(kg));
-        
-        fiscalEngineService.createPreliminaryNFe({
+        setStatus('TRANSMITTING');
+
+        const nfe = await fiscalEngineService.createPreliminaryNFe({
             producerId: user.id,
             siloId: user.tenantId || 't1',
             commodity: CommodityType.SOYBEAN,
             estimatedWeightKg: kgNum,
-            unit: GrainUnit.KG, 
+            unit: GrainUnit.KG,
             plate: plate.toUpperCase(),
             gpsCoordinates: { lat: -12.9, lng: -55.4 }
         });
+
+        setResult(nfe);
+        setStatus('DONE');
         refresh();
-        alert(`NF-e Transmitida com sucesso.`);
-        onBack();
     };
+
+    if (status === 'DONE' && result) {
+        const rejected = result.status === NFeStatus.REJECTED;
+        return (
+            <div className="bg-white p-8 rounded-[40px] border shadow-2xl space-y-6 animate-in zoom-in-95 mx-2">
+                <div className={`p-6 rounded-[28px] text-center ${rejected ? 'bg-red-50' : 'bg-green-50'}`}>
+                    {rejected ? (
+                        <XCircleIcon />
+                    ) : (
+                        <CheckCircle className="mx-auto text-green-600 mb-2" size={40} />
+                    )}
+                    <p className={`font-black text-lg ${rejected ? 'text-red-700' : 'text-green-700'}`}>
+                        {rejected ? 'NF-e rejeitada' : 'NF-e Transmitida'}
+                    </p>
+                    <span className={`inline-block mt-2 text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full ${result.emissionMode === 'REAL' ? 'bg-blue-600 text-white' : 'bg-amber-100 text-amber-700'}`}>
+                        {result.emissionMode === 'REAL' ? 'Ambiente SEFAZ (Focus NFe)' : 'Simulação — Focus NFe não configurado'}
+                    </span>
+                </div>
+
+                {result.accessKey && (
+                    <div>
+                        <label className="block text-[10px] font-black text-slate-400 uppercase mb-1 ml-1">Chave de Acesso</label>
+                        <p className="font-mono text-xs bg-slate-50 p-3 rounded-xl break-all">{result.accessKey}</p>
+                    </div>
+                )}
+                {result.sefazMessage && (
+                    <p className="text-xs text-slate-500 px-1">{result.sefazMessage}</p>
+                )}
+                {result.rejectionErrors?.length > 0 && (
+                    <ul className="text-xs text-red-600 space-y-1 px-1 list-disc list-inside">
+                        {result.rejectionErrors.map((e: any, i: number) => <li key={i}>{e.campo ? `${e.campo}: ` : ''}{e.mensagem}</li>)}
+                    </ul>
+                )}
+
+                <button onClick={onBack} className="w-full bg-slate-900 text-white py-5 rounded-[28px] font-black text-lg uppercase tracking-widest active:scale-95 transition-all">Fechar</button>
+            </div>
+        );
+    }
 
     return (
         <div className="bg-white p-8 rounded-[40px] border shadow-2xl space-y-6 animate-in zoom-in-95 mx-2">
             <div className="space-y-4">
                 <div>
                     <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1 font-bold">Quantidade (kg)</label>
-                    <input type="number" value={kg} onChange={e => setKg(e.target.value)} className="w-full p-4 bg-slate-50 border-none rounded-2xl font-black text-2xl outline-none" placeholder="0"/>
+                    <input type="number" value={kg} onChange={e => setKg(e.target.value)} disabled={status === 'TRANSMITTING'} className="w-full p-4 bg-slate-50 border-none rounded-2xl font-black text-2xl outline-none disabled:opacity-50" placeholder="0"/>
                     {kg && (
                         <p className="text-[10px] text-slate-400 font-bold uppercase mt-2 ml-1 tracking-widest">
                              ≈ {UnitConversionService.formatSacas(parseFloat(kg))} Estimados
@@ -491,16 +533,22 @@ const NfeCreateView = ({ onBack, refresh, user }: any) => {
                 </div>
                 <div>
                     <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">Placa do Veículo</label>
-                    <input value={plate} onChange={e => setPlate(e.target.value)} className="w-full p-4 bg-slate-50 border-none rounded-2xl font-black uppercase outline-none" placeholder="ABC-1234"/>
+                    <input value={plate} onChange={e => setPlate(e.target.value)} disabled={status === 'TRANSMITTING'} className="w-full p-4 bg-slate-50 border-none rounded-2xl font-black uppercase outline-none disabled:opacity-50" placeholder="ABC-1234"/>
                 </div>
                 <div className="p-5 bg-blue-50 rounded-[24px] text-[10px] font-black text-blue-800 uppercase leading-relaxed tracking-tighter">
-                    Ao confirmar, a NF-e será transmitida via SEFAZ para autorização de transporte campo-silo.
+                    Ao confirmar, a NF-e será transmitida via SEFAZ (Focus NFe) para autorização de transporte campo-silo.
                 </div>
-                <button onClick={handleEmit} disabled={!kg || !plate} className="w-full bg-blue-600 text-white py-5 rounded-[28px] font-black text-lg shadow-xl shadow-blue-100 uppercase tracking-widest active:scale-95 transition-all">Transmitir SEFAZ</button>
+                <button onClick={handleEmit} disabled={!kg || !plate || status === 'TRANSMITTING'} className="w-full bg-blue-600 text-white py-5 rounded-[28px] font-black text-lg shadow-xl shadow-blue-100 uppercase tracking-widest active:scale-95 transition-all disabled:opacity-60">
+                    {status === 'TRANSMITTING' ? 'Transmitindo...' : 'Transmitir SEFAZ'}
+                </button>
             </div>
         </div>
     )
 }
+
+const XCircleIcon = () => (
+    <AlertCircle className="mx-auto text-red-600 mb-2" size={40} />
+);
 
 const GrainsListView = ({ user, pushView }: any) => {
     const grainBalanceKg = ledgerService.getBalance(user.accountId, Currency.GRAIN_KG);

@@ -264,17 +264,19 @@ export enum NFeStatus {
   CANCELED = 'CANCELED'
 }
 
+export type FocusNFeEmissionMode = 'REAL' | 'SIMULADO';
+
 export interface NFeDocument {
-  id: string; 
-  accessKey?: string; 
+  id: string;
+  accessKey?: string;
   protocol?: string;
-  xmlMock?: string; 
+  xmlMock?: string;
   producerId: string;
   siloId: string;
   commodity: CommodityType;
-  estimatedWeightKg: number; 
-  finalWeightKg?: number; 
-  unit: GrainUnit; 
+  estimatedWeightKg: number;
+  finalWeightKg?: number;
+  unit: GrainUnit;
   plate: string;
   driverName?: string;
   gpsCoordinates: {
@@ -284,8 +286,16 @@ export interface NFeDocument {
   status: NFeStatus;
   issuedAt: string;
   validatedAt?: string;
-  contractId?: string; 
-  digitizationEventId?: string; 
+  contractId?: string;
+  digitizationEventId?: string;
+  // --- Integração Focus NFe (real, com fallback simulado) ---
+  focusRef?: string;
+  emissionMode?: FocusNFeEmissionMode;
+  sefazStatusRaw?: string;
+  sefazMessage?: string;
+  danfeUrl?: string;
+  xmlUrl?: string;
+  rejectionErrors?: { campo?: string; mensagem: string }[];
 }
 
 // --- INTEGRATION ENGINE TYPES ---
