@@ -572,10 +572,10 @@ const GrainsListView = ({ user, pushView }: any) => {
 
     return (
         <div className="space-y-5 px-2">
-            <div className="bg-amber-600 p-10 rounded-[48px] text-white shadow-xl shadow-amber-200 flex flex-col items-center text-center relative overflow-hidden">
+            <div className="bg-amber-600 p-8 rounded-[48px] text-white shadow-xl shadow-amber-200 flex flex-col items-center text-center relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-4 opacity-10 rotate-12"><Package size={100}/></div>
                 <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-80 mb-3">Saldo Disponível</p>
-                <h2 className="text-5xl font-black mb-3 leading-none tracking-tighter">{UnitConversionService.formatSacas(grainBalanceKg)}</h2>
+                <h2 className="text-3xl font-black mb-3 leading-none tracking-tighter whitespace-nowrap">{UnitConversionService.formatSacas(grainBalanceKg)}</h2>
                 <span className="text-sm font-black opacity-90 uppercase tracking-widest">≈ {UnitConversionService.formatBRL(marketValueBrl)}</span>
             </div>
 
