@@ -2,6 +2,7 @@
 import { Tenant, Merchant, User, UserRole, SystemConfig, AccountType, TransactionType, TransactionSource, Currency, LiquidityConfig, GrainUnit, SiloPriceConfig, SiloOperationMode, CommodityConfig, SiloIntegrationSettings } from '../types';
 import { MOCK_TENANTS, MOCK_MERCHANTS, SYSTEM_CONFIG, MOCK_USERS, MOCK_ACCOUNTS } from './mockData';
 import { baasEngine, ledgerService } from './ledgerService';
+import { baasOrchestratorService } from './baasOrchestratorService';
 
 // Simulating Core DB with mutable local state
 let tenantDb = [...MOCK_TENANTS];
@@ -68,6 +69,15 @@ export const coreService = {
       tenantId: data.tenantId
     };
     userDb.push(newUser);
+
+    // Sem isso, o produtor fica sem AgroFinanceLink e o dashboard dele quebra
+    // (divisão por zero no limite diário) — ver baasOrchestratorService.createLink.
+    baasOrchestratorService.createLink({
+      agroAccountId: wallet.id,
+      cvuAccountId: cvu.id,
+      siloMasterId: silo?.liquidityConfig.masterAccountId || '',
+      tenantId: data.tenantId,
+    });
 
     ledgerService._writeEntry({
       eventId: `evt_prod_created_${Date.now()}`,

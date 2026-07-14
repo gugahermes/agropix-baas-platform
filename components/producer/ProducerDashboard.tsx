@@ -133,14 +133,14 @@ const HomeView = ({ user, pushView }: any) => {
           </div>
           <div className="mt-3 flex items-center gap-2">
              <div className="flex-1 h-1 bg-slate-100 rounded-full overflow-hidden">
-                <div className="h-full bg-sicredi-500 rounded-full transition-all duration-1000" style={{ width: `${Math.min((usedToday/dailyLimit)*100, 100)}%` }}></div>
+                <div className="h-full bg-sicredi-500 rounded-full transition-all duration-1000" style={{ width: `${dailyLimit > 0 ? Math.min((usedToday/dailyLimit)*100, 100) : 0}%` }}></div>
              </div>
-             <span className="text-[8px] font-bold text-slate-400 uppercase">Consumido {(usedToday/dailyLimit*100).toFixed(0)}%</span>
+             <span className="text-[8px] font-bold text-slate-400 uppercase">Consumido {dailyLimit > 0 ? (usedToday/dailyLimit*100).toFixed(0) : '0'}%</span>
           </div>
         </div>
 
         {/* Limite Estendido */}
-        {link?.extendedLimitBrl && (
+        {!!link?.extendedLimitBrl && (
            <div className="bg-slate-900 p-4 rounded-[28px] text-white flex justify-between items-center group active:scale-[0.98] transition-all cursor-pointer relative overflow-hidden">
               <div className="absolute top-0 right-0 w-20 h-20 bg-white/5 rounded-full -mr-10 -mt-10"></div>
               <div>
@@ -297,22 +297,30 @@ const QuotationsListView = ({ user }: { user: User }) => {
 }
 
 const PixAreaView = ({ user, refresh, pushView }: any) => {
-  const [pixMode, setPixMode] = useState<'MAIN' | 'SCAN' | 'KEY'>('MAIN');
-  const [pixKey, setPixKey] = useState('');
+  const [pixMode, setPixMode] = useState<'MAIN' | 'SCAN' | 'MERCHANT' | 'PAY'>('MAIN');
+  const [selectedMerchantId, setSelectedMerchantId] = useState<string | null>(null);
   const [amount, setAmount] = useState('');
   const [scanning, setScanning] = useState(false);
+  const [payError, setPayError] = useState<string | null>(null);
+  const [cameraError, setCameraError] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+
+  // O produtor só banca com o silo/link que é realmente dele — nunca um ID fixo.
+  const link = baasOrchestratorService.getAllLinks().find(l => l.agroAccountId === user.accountId);
+  const merchants = coreService.getMerchants().filter(m => m.status === 'ACTIVE');
+  const selectedMerchant = merchants.find(m => m.id === selectedMerchantId);
 
   const startCamera = async () => {
     setScanning(true);
+    setCameraError(null);
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
       }
     } catch (e) {
-      alert("Permissão de câmera negada.");
       setScanning(false);
+      setCameraError('Permissão de câmera negada — use "Rede Credenciada" para pagar manualmente.');
     }
   };
 
@@ -325,17 +333,21 @@ const PixAreaView = ({ user, refresh, pushView }: any) => {
   };
 
   const handlePay = () => {
-    if(!amount || !pixKey) return;
-    const res = baasOrchestratorService.validateTransaction('lnk_u1_01', parseFloat(amount));
-    if(!res.allowed) return alert(`Transação Rejeitada: ${res.reason}`);
+    setPayError(null);
+    if (!amount || !selectedMerchant) return;
+    if (!link) return setPayError('Nenhum limite AgroPix vinculado a este produtor.');
+
+    const res = baasOrchestratorService.validateTransaction(link.id, parseFloat(amount));
+    if (!res.allowed) return setPayError(res.reason || 'Transação rejeitada.');
 
     ledgerService.processSplitTransaction(
-        'acc_silo_master_01', user.accountId, 'acc_merch_01', 
-        parseFloat(amount), parseFloat(amount)*0.015, `Pix Mobile: ${pixKey}`, 't1'
+        link.siloMasterId, user.accountId, selectedMerchant.baasAccountId,
+        parseFloat(amount), parseFloat(amount) * 0.015, `Pix Mobile: ${selectedMerchant.name}`, link.tenantId
     );
     refresh();
-    alert("PIX enviado com sucesso!");
     setPixMode('MAIN');
+    setAmount('');
+    setSelectedMerchantId(null);
   }
 
   if (pixMode === 'SCAN') {
@@ -352,31 +364,75 @@ const PixAreaView = ({ user, refresh, pushView }: any) => {
              <div className="absolute inset-0 border-4 border-sicredi-500 rounded-[40px] animate-pulse"></div>
           </div>
         </div>
-        <div className="p-10 bg-black flex justify-center">
+        <div className="p-10 bg-black flex flex-col items-center gap-4">
+            {cameraError && (
+                <p className="text-xs font-bold text-red-400 text-center max-w-xs">{cameraError}</p>
+            )}
             {!scanning ? (
                 <button onClick={startCamera} className="bg-sicredi-600 text-white px-10 py-5 rounded-3xl font-black">Ativar Câmera</button>
             ) : (
-                <button onClick={() => { stopCamera(); setPixMode('KEY'); alert("Simulado: Fertilizantes S/A - R$ 1.500,00"); }} className="bg-white text-black px-10 py-5 rounded-3xl font-black">Simular Leitura</button>
+                <button
+                  onClick={() => {
+                    stopCamera();
+                    // QR simulado aponta pro segundo comerciante ativo da rede real (não mais um ID fixo).
+                    const scanned = merchants[1] || merchants[0];
+                    if (scanned) {
+                      setSelectedMerchantId(scanned.id);
+                      setAmount('1500');
+                      setPixMode('PAY');
+                    } else {
+                      setPixMode('MERCHANT');
+                    }
+                  }}
+                  className="bg-white text-black px-10 py-5 rounded-3xl font-black"
+                >Simular Leitura</button>
             )}
         </div>
       </div>
     );
   }
 
-  if (pixMode === 'KEY') {
+  if (pixMode === 'MERCHANT') {
+    return (
+        <div className="space-y-3 px-2">
+            <h3 className="text-xl font-black text-slate-900 px-1 mb-2">Rede Credenciada</h3>
+            {merchants.map(m => (
+                <button
+                  key={m.id}
+                  onClick={() => { setSelectedMerchantId(m.id); setPixMode('PAY'); }}
+                  className="w-full bg-white p-5 rounded-[28px] border border-slate-100 shadow-sm flex items-center justify-between active:scale-[0.98] transition-all"
+                >
+                    <div className="text-left">
+                        <p className="font-black text-slate-900 tracking-tight">{m.name}</p>
+                        <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">{m.category}</p>
+                    </div>
+                    <ArrowRight className="text-slate-300" size={20}/>
+                </button>
+            ))}
+            {merchants.length === 0 && (
+                <p className="text-center text-slate-400 text-sm font-bold p-10">Nenhum comerciante credenciado disponível.</p>
+            )}
+        </div>
+    )
+  }
+
+  if (pixMode === 'PAY') {
     return (
         <div className="bg-white p-8 rounded-[40px] border shadow-2xl space-y-6 animate-in zoom-in-95 mx-2">
             <h3 className="text-2xl font-black text-slate-900">Pagar via Pix</h3>
             <div className="space-y-4">
-                <div>
-                    <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">Chave do Recebedor</label>
-                    <input value={pixKey} onChange={e => setPixKey(e.target.value)} className="w-full p-4 bg-slate-50 border-none rounded-2xl font-bold focus:ring-2 focus:ring-slate-900 outline-none" placeholder="CPF, CNPJ ou E-mail"/>
+                <div className="p-4 bg-slate-50 rounded-2xl">
+                    <p className="text-[10px] font-black text-slate-400 uppercase mb-1">Recebedor</p>
+                    <p className="font-black text-slate-900">{selectedMerchant?.name || '—'}</p>
                 </div>
                 <div>
                     <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">Valor (R$)</label>
                     <input type="number" value={amount} onChange={e => setAmount(e.target.value)} className="w-full p-5 bg-slate-50 border-none rounded-3xl font-black text-4xl placeholder:text-slate-200 outline-none" placeholder="0,00"/>
                 </div>
-                <button onClick={handlePay} disabled={!amount || !pixKey} className="w-full bg-slate-900 text-white py-5 rounded-[28px] font-black text-lg shadow-xl shadow-slate-200 active:scale-95 transition-all">Confirmar Pagamento</button>
+                {payError && (
+                    <p className="text-xs font-bold text-red-600 bg-red-50 p-3 rounded-xl">{payError}</p>
+                )}
+                <button onClick={handlePay} disabled={!amount || !selectedMerchant} className="w-full bg-slate-900 text-white py-5 rounded-[28px] font-black text-lg shadow-xl shadow-slate-200 active:scale-95 transition-all disabled:opacity-60">Confirmar Pagamento</button>
             </div>
         </div>
     )
@@ -385,28 +441,28 @@ const PixAreaView = ({ user, refresh, pushView }: any) => {
   return (
     <div className="space-y-4 px-2">
         <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4 text-center">Selecione o método</p>
-        
-        <PayOption 
-            icon={<QrCode size={28}/>} 
-            title="Ler QR Code" 
-            sub="Pagar via Pix Scanner" 
+
+        <PayOption
+            icon={<QrCode size={28}/>}
+            title="Ler QR Code"
+            sub="Pagar via Pix Scanner"
             onClick={() => setPixMode('SCAN')}
             color="bg-sicredi-600"
         />
 
-        <PayOption 
-            icon={<Sprout size={28}/>} 
-            title="Pagar com Grão" 
-            sub="Débito direto do seu saldo" 
+        <PayOption
+            icon={<Sprout size={28}/>}
+            title="Pagar com Grão"
+            sub="Débito direto do seu saldo"
             onClick={() => pushView('PAY_GRAIN')}
             color="bg-sicredi-600"
         />
 
-        <PayOption 
-            icon={<Key size={28}/>} 
-            title="Digitar Chave Pix" 
-            sub="Transferência manual" 
-            onClick={() => setPixMode('KEY')}
+        <PayOption
+            icon={<Key size={28}/>}
+            title="Rede Credenciada"
+            sub="Escolher comerciante cadastrado"
+            onClick={() => setPixMode('MERCHANT')}
             color="bg-slate-900"
         />
     </div>

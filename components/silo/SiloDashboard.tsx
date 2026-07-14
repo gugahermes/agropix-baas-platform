@@ -6,6 +6,7 @@ import { coreService } from '../../services/coreService';
 import { ledgerService } from '../../services/ledgerService';
 import { UnitConversionService } from '../../services/unitConversionService';
 import { quotationService } from '../../services/quotationService';
+import { baasOrchestratorService } from '../../services/baasOrchestratorService';
 import { 
   LayoutDashboard, Users, FileText, Truck, Database, Settings, 
   Search, Plus, Scale, CheckCircle, XCircle, AlertCircle,
@@ -623,13 +624,26 @@ const SiloComplianceView = ({ user, onRefresh }: any) => (
 const SiloClientsTab = ({ user, onSelectProducer, onRefresh }: any) => {
     const producers = coreService.getProducersBySilo(user.tenantId || 't1');
     const silo = coreService.getTenantById(user.tenantId || 't1')!;
+    const [showAddModal, setShowAddModal] = useState(false);
 
     return (
         <div className="space-y-6">
             <div className="flex justify-between items-center">
                 <h2 className="text-xl font-black text-slate-800">Carteira de Produtores</h2>
-                <button className="bg-slate-900 text-white px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest">Exportar CSV</button>
+                <div className="flex gap-3">
+                    <button onClick={() => setShowAddModal(true)} className="bg-sicredi-600 text-white px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest flex items-center gap-2 hover:bg-sicredi-700 transition-colors">
+                        <Plus size={14}/> Adicionar Produtor
+                    </button>
+                    <button className="bg-slate-900 text-white px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest">Exportar CSV</button>
+                </div>
             </div>
+            {showAddModal && (
+                <AddProducerModal
+                    tenantId={user.tenantId || 't1'}
+                    onClose={() => setShowAddModal(false)}
+                    onCreated={() => { setShowAddModal(false); onRefresh(); }}
+                />
+            )}
             <div className="bg-white rounded-[32px] border overflow-hidden shadow-sm">
                 <table className="w-full text-sm text-left">
                     <thead className="bg-slate-50 text-slate-500 border-b uppercase text-[10px] font-black tracking-widest">
@@ -664,14 +678,69 @@ const SiloClientsTab = ({ user, onSelectProducer, onRefresh }: any) => {
                         })}
                     </tbody>
                 </table>
+                {producers.length === 0 && (
+                    <div className="p-16 text-center text-slate-300 font-black uppercase text-[10px] tracking-widest">Nenhum produtor cadastrado neste silo ainda</div>
+                )}
             </div>
         </div>
     )
 }
 
+const AddProducerModal = ({ tenantId, onClose, onCreated }: { tenantId: string; onClose: () => void; onCreated: () => void }) => {
+    const [name, setName] = useState('');
+    const [document, setDocument] = useState('');
+    const [culture, setCulture] = useState('');
+    const [saving, setSaving] = useState(false);
+
+    const handleCreate = () => {
+        if (!name || !document) return;
+        setSaving(true);
+        coreService.createProducerForSilo({ name, document, tenantId, culture: culture || undefined });
+        onCreated();
+    };
+
+    return (
+        <div className="fixed inset-0 bg-black/40 z-[100] flex items-center justify-center p-6" onClick={onClose}>
+            <div className="bg-white rounded-[40px] p-8 max-w-md w-full shadow-2xl space-y-5 animate-in zoom-in-95" onClick={e => e.stopPropagation()}>
+                <div className="flex justify-between items-center">
+                    <h3 className="text-xl font-black text-slate-900">Novo Produtor</h3>
+                    <button onClick={onClose} className="text-slate-400 hover:text-slate-800"><XCircle size={22}/></button>
+                </div>
+                <div className="space-y-4">
+                    <div>
+                        <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">Nome completo</label>
+                        <input value={name} onChange={e => setName(e.target.value)} className="w-full p-4 bg-slate-50 border-none rounded-2xl font-bold outline-none focus:ring-2 focus:ring-sicredi-500" placeholder="Ex: Maria Agricultora"/>
+                    </div>
+                    <div>
+                        <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">CPF/CNPJ</label>
+                        <input value={document} onChange={e => setDocument(e.target.value)} className="w-full p-4 bg-slate-50 border-none rounded-2xl font-bold outline-none focus:ring-2 focus:ring-sicredi-500" placeholder="000.000.000-00"/>
+                    </div>
+                    <div>
+                        <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">Cultura principal (opcional)</label>
+                        <input value={culture} onChange={e => setCulture(e.target.value)} className="w-full p-4 bg-slate-50 border-none rounded-2xl font-bold outline-none focus:ring-2 focus:ring-sicredi-500" placeholder="Ex: Soja"/>
+                    </div>
+                </div>
+                <button
+                    onClick={handleCreate}
+                    disabled={!name || !document || saving}
+                    className="w-full bg-sicredi-600 text-white py-4 rounded-[24px] font-black uppercase tracking-widest shadow-lg active:scale-95 transition-all disabled:opacity-50"
+                >
+                    Cadastrar Produtor
+                </button>
+            </div>
+        </div>
+    );
+};
+
 const ProducerDetailView = ({ producerId, onBack }: any) => {
     const producer = coreService.getUsers().find(u => u.id === producerId);
     if(!producer) return null;
+
+    const grainBalanceKg = ledgerService.getBalance(producer.accountId, Currency.GRAIN_KG);
+    const quotation = quotationService.getActiveQuotation(producer.tenantId || 't1');
+    const marketValueBrl = grainBalanceKg * quotation.finalPriceKg;
+    const link = baasOrchestratorService.getAllLinks().find(l => l.agroAccountId === producer.accountId);
+
     return (
         <div className="space-y-6">
             <button onClick={onBack} className="flex items-center gap-2 text-slate-500 font-black text-xs uppercase hover:text-slate-800 transition-colors">
@@ -680,14 +749,26 @@ const ProducerDetailView = ({ producerId, onBack }: any) => {
             <div className="bg-white p-10 rounded-[40px] border shadow-sm">
                 <h2 className="text-3xl font-black text-slate-900 tracking-tighter">{producer.name}</h2>
                 <p className="text-sm text-slate-500 font-mono tracking-widest uppercase mb-8">{producer.document}</p>
-                
+
                 <div className="grid grid-cols-2 gap-8 pt-8 border-t">
                     <div className="p-6 bg-slate-50 rounded-[32px]">
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Finanças</p>
+                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Custódia Digital</p>
                         <div className="space-y-2">
-                            <div className="flex justify-between text-xs font-bold"><span className="text-slate-500">Saldo Agro:</span> <span>R$ 15.000</span></div>
-                            <div className="flex justify-between text-xs font-bold"><span className="text-slate-500">Score Interno:</span> <span className="text-sicredi-600">850</span></div>
+                            <div className="flex justify-between text-xs font-bold"><span className="text-slate-500">Saldo em grão:</span> <span>{UnitConversionService.formatSacas(grainBalanceKg)}</span></div>
+                            <div className="flex justify-between text-xs font-bold"><span className="text-slate-500">Valor estimado:</span> <span className="text-sicredi-600">{UnitConversionService.formatBRL(marketValueBrl)}</span></div>
                         </div>
+                    </div>
+                    <div className="p-6 bg-slate-50 rounded-[32px]">
+                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Limite AgroPix</p>
+                        {link ? (
+                            <div className="space-y-2">
+                                <div className="flex justify-between text-xs font-bold"><span className="text-slate-500">Diário autorizado:</span> <span>{UnitConversionService.formatBRL(link.dailyLimitBrl)}</span></div>
+                                <div className="flex justify-between text-xs font-bold"><span className="text-slate-500">Utilizado hoje:</span> <span>{UnitConversionService.formatBRL(link.usedTodayBrl)}</span></div>
+                                <div className="flex justify-between text-xs font-bold"><span className="text-slate-500">Status:</span> <span className={link.status === 'ACTIVE' ? 'text-sicredi-600' : 'text-red-600'}>{link.status === 'ACTIVE' ? 'Ativo' : 'Suspenso'}</span></div>
+                            </div>
+                        ) : (
+                            <p className="text-xs font-bold text-slate-400">Nenhum limite AgroPix vinculado ainda.</p>
+                        )}
                     </div>
                 </div>
             </div>

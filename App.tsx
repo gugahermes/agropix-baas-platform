@@ -1,16 +1,17 @@
 
 import React, { useState, useEffect } from 'react';
 import { User, UserRole } from './types';
-import { MOCK_USERS } from './services/mockData';
+import { coreService } from './services/coreService';
 import { Layout } from './components/Layout';
 import { ProducerDashboard } from './components/producer/ProducerDashboard';
 import { SiloDashboard } from './components/silo/SiloDashboard';
 import { BaaSDashboard } from './components/baas/BaaSDashboard';
-import { Leaf, Building2, ShieldCheck } from 'lucide-react';
+import { Leaf, Building2, ShieldCheck, ArrowRight, ArrowLeft } from 'lucide-react';
 
 export default function App() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [activeTab, setActiveTab] = useState('HOME');
+  const [showProducerPicker, setShowProducerPicker] = useState(false);
 
   // Persist session to avoid resetting on refresh
   useEffect(() => {
@@ -20,8 +21,11 @@ export default function App() {
     }
   }, []);
 
+  // Busca sempre na mesma base compartilhada com o resto do app (coreService),
+  // não numa lista estática separada — assim um produtor cadastrado pelo Silo
+  // Admin já aparece aqui pra logar, sem precisar tocar em código.
   const handleLogin = (userId: string) => {
-    const user = MOCK_USERS.find(u => u.id === userId);
+    const user = coreService.getUsers().find(u => u.id === userId);
     if (user) {
       setCurrentUser(user);
       sessionStorage.setItem('agropix_user', JSON.stringify(user));
@@ -30,10 +34,13 @@ export default function App() {
 
   const handleLogout = () => {
     setCurrentUser(null);
+    setShowProducerPicker(false);
     sessionStorage.removeItem('agropix_user');
   };
 
   if (!currentUser) {
+    const producers = coreService.getUsers().filter(u => u.role === UserRole.PRODUCER);
+
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-sicredi-900 via-sicredi-800 to-slate-900 p-4">
         <div className="mb-8 text-center">
@@ -46,26 +53,53 @@ export default function App() {
           <p className="text-sicredi-100/80 font-medium">Plataforma Financeira para o Agronegócio</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl">
-          <LoginCard 
-            role="Produtor Rural" 
-            icon={<Leaf size={32} className="text-sicredi-500" />}
-            description="Wallet, Pagamentos e NFe Campo"
-            onClick={() => handleLogin('u1')}
-          />
-          <LoginCard 
-            role="Silo Admin" 
-            icon={<Building2 size={32} className="text-sicredigold-500" />}
-            description="Recebimento e Digitalização"
-            onClick={() => handleLogin('u2')}
-          />
-          <LoginCard 
-            role="BaaS Admin" 
-            icon={<ShieldCheck size={32} className="text-sicredi-500" />}
-            description="Ledger e Compliance Universal"
-            onClick={() => handleLogin('u3')}
-          />
-        </div>
+        {!showProducerPicker ? (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl">
+            <LoginCard
+              role="Produtor Rural"
+              icon={<Leaf size={32} className="text-sicredi-500" />}
+              description="Wallet, Pagamentos e NFe Campo"
+              onClick={() => setShowProducerPicker(true)}
+            />
+            <LoginCard
+              role="Silo Admin"
+              icon={<Building2 size={32} className="text-sicredigold-500" />}
+              description="Recebimento e Digitalização"
+              onClick={() => handleLogin('u2')}
+            />
+            <LoginCard
+              role="BaaS Admin"
+              icon={<ShieldCheck size={32} className="text-sicredi-500" />}
+              description="Ledger e Compliance Universal"
+              onClick={() => handleLogin('u3')}
+            />
+          </div>
+        ) : (
+          <div className="w-full max-w-md space-y-3">
+            <button onClick={() => setShowProducerPicker(false)} className="flex items-center gap-2 text-sicredi-100/70 text-xs font-black uppercase tracking-widest mb-2 hover:text-white transition-colors">
+              <ArrowLeft size={14}/> Voltar
+            </button>
+            {producers.map(p => {
+              const silo = coreService.getTenantById(p.tenantId || '');
+              return (
+                <button
+                  key={p.id}
+                  onClick={() => handleLogin(p.id)}
+                  className="w-full bg-white/5 backdrop-blur-sm border border-white/10 p-5 rounded-2xl hover:bg-white/10 hover:border-sicredi-500/50 transition-all text-left flex items-center justify-between group"
+                >
+                  <div>
+                    <p className="text-white font-bold">{p.name}</p>
+                    <p className="text-slate-400 text-xs font-mono">{p.document} {silo ? `· ${silo.name}` : '· sem silo vinculado'}</p>
+                  </div>
+                  <ArrowRight size={18} className="text-sicredi-400 group-hover:translate-x-1 transition-transform"/>
+                </button>
+              );
+            })}
+            {producers.length === 0 && (
+              <p className="text-center text-slate-400 text-sm p-6">Nenhum produtor cadastrado ainda — peça pro Silo Admin cadastrar um em "Carteira de Produtores".</p>
+            )}
+          </div>
+        )}
       </div>
     );
   }
