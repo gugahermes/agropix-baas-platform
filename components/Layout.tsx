@@ -54,52 +54,53 @@ export const Layout: React.FC<LayoutProps> = ({ user, onLogout, children, active
       </header>
 
       {/* Main Content Area */}
-      <main className="flex-1 w-full max-w-7xl mx-auto px-4 py-4 md:py-8 overflow-x-hidden">
+      <main className={`flex-1 w-full max-w-7xl mx-auto px-4 py-4 md:py-8 overflow-x-hidden ${isProducer && setActiveTab ? 'pb-32 md:pb-8' : ''}`}>
         {children}
       </main>
 
       {/* Bottom Navigation - Producer Only (Mobile) */}
       {isProducer && setActiveTab && (
-        <div className="md:hidden fixed bottom-0 left-0 right-0 z-50">
+        <div className="md:hidden fixed bottom-0 left-0 right-0 z-50" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
            {/* Shadow Overlay */}
            <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-slate-900/5 to-transparent pointer-events-none"></div>
-           
-           <nav className="relative bg-white/95 backdrop-blur-md border-t border-slate-100 px-4 py-2 flex justify-around items-center shadow-[0_-8px_24px_rgba(0,0,0,0.05)]">
-              <BottomNavItem 
-                active={activeTab === 'HOME'} 
-                icon={<Home size={22}/>} 
-                label="Início" 
-                onClick={() => setActiveTab('HOME')} 
+
+           <nav className="relative bg-white/95 backdrop-blur-md border-t border-slate-100 px-4 pt-2 pb-3 flex justify-around items-center shadow-[0_-8px_24px_rgba(0,0,0,0.05)]">
+              <BottomNavItem
+                active={activeTab === 'HOME'}
+                icon={<Home size={22}/>}
+                label="Início"
+                onClick={() => setActiveTab('HOME')}
               />
-              <BottomNavItem 
-                active={activeTab === 'GRAINS'} 
-                icon={<Wheat size={22}/>} 
-                label="Grãos" 
-                onClick={() => setActiveTab('GRAINS')} 
+              <BottomNavItem
+                active={activeTab === 'GRAINS'}
+                icon={<Wheat size={22}/>}
+                label="Grãos"
+                onClick={() => setActiveTab('GRAINS')}
               />
-              
+
               {/* Central Action Button (PAGAR) */}
-              <div className="relative -mt-10 mb-4">
-                  <button 
+              <div className="relative -mt-10 w-16 shrink-0">
+                  <button
                     onClick={() => setActiveTab('PAY_PIX')}
-                    className="w-16 h-16 bg-slate-900 text-white rounded-full flex flex-col items-center justify-center shadow-xl shadow-slate-400 active:scale-90 transition-transform border-4 border-white"
+                    aria-label="Pagar"
+                    className="w-16 h-16 bg-slate-900 text-white rounded-full flex flex-col items-center justify-center shadow-xl shadow-slate-400 active:scale-90 transition-transform border-4 border-white cursor-pointer"
                   >
                     <Scan size={28} strokeWidth={2.5}/>
                   </button>
-                  <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-black text-slate-900 uppercase tracking-tighter">PAGAR</span>
+                  <span className="block mt-1.5 text-center text-[10px] font-black text-slate-900 uppercase tracking-tighter">PAGAR</span>
               </div>
 
-              <BottomNavItem 
-                active={activeTab === 'NFE'} 
-                icon={<FileText size={22}/>} 
-                label="NF-e" 
-                onClick={() => setActiveTab('NFE')} 
+              <BottomNavItem
+                active={activeTab === 'NFE'}
+                icon={<FileText size={22}/>}
+                label="NF-e"
+                onClick={() => setActiveTab('NFE')}
               />
-              <BottomNavItem 
-                active={activeTab === 'MENU'} 
-                icon={<UserIcon size={22}/>} 
-                label="Perfil" 
-                onClick={() => setActiveTab('MENU')} 
+              <BottomNavItem
+                active={activeTab === 'MENU'}
+                icon={<UserIcon size={22}/>}
+                label="Perfil"
+                onClick={() => setActiveTab('MENU')}
               />
            </nav>
         </div>

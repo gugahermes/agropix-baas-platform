@@ -14,6 +14,21 @@ import {
   CreditCard, Camera, Scan, Key, ArrowLeft, Download, X, TrendingUp, ShieldAlert, Lock, ArrowRight, History
 } from 'lucide-react';
 
+const COMMODITY_LABELS: Record<string, string> = {
+  [CommodityType.SOYBEAN]: 'Soja',
+  [CommodityType.CORN]: 'Milho',
+  [CommodityType.WHEAT]: 'Trigo',
+};
+
+const NFE_STATUS_LABELS: Record<string, string> = {
+  DRAFT: 'RASCUNHO',
+  ISSUED: 'EMITIDA',
+  WEIGHING: 'EM PESAGEM',
+  CONFIRMED: 'CONFIRMADA',
+  REJECTED: 'REJEITADA',
+  CANCELED: 'CANCELADA',
+};
+
 interface ProducerDashboardProps {
   user: User;
   activeTab: string;
@@ -663,12 +678,12 @@ const NfeListView = ({ user, pushView }: any) => {
                         <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400"><FileText size={24}/></div>
                         <div>
                             <p className="font-black text-slate-900 tracking-tight leading-none mb-1">Série {n.accessKey?.substring(30,34)}</p>
-                            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{n.plate} • {n.commodity}</p>
+                            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{n.plate} • {COMMODITY_LABELS[n.commodity] || n.commodity}</p>
                         </div>
                     </div>
                     <div className="text-right">
                         <p className="text-sm font-black text-slate-900 mb-1">{n.estimatedWeightKg.toLocaleString('pt-BR')} kg</p>
-                        <span className={`text-[8px] font-black uppercase px-2 py-0.5 rounded-full ${n.status === 'CONFIRMED' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}>{n.status}</span>
+                        <span className={`text-[8px] font-black uppercase px-2 py-0.5 rounded-full ${n.status === 'CONFIRMED' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}>{NFE_STATUS_LABELS[n.status] || n.status}</span>
                     </div>
                 </div>
             ))}
