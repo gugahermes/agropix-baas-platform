@@ -83,8 +83,8 @@ export const BaaSDashboard: React.FC = () => {
   return (
     <div className="flex h-[calc(100vh-100px)] bg-slate-50 rounded-2xl border border-slate-200 overflow-hidden shadow-xl">
       {/* Sidebar */}
-      <div className="w-64 bg-slate-900 text-slate-300 flex flex-col">
-        <div className="p-6 border-b border-slate-800">
+      <div className="w-64 bg-sicredi-900 text-sicredi-100 flex flex-col">
+        <div className="p-6 border-b border-sicredi-800">
           <h2 className="text-white font-bold tracking-wider text-[10px] uppercase opacity-50">AgroPix Master Admin</h2>
           <p className="text-lg font-bold text-white tracking-tighter">Fintech Control</p>
         </div>
@@ -92,7 +92,7 @@ export const BaaSDashboard: React.FC = () => {
         <div className="flex-1 overflow-y-auto py-4 space-y-6">
           {MENU.map((cat, idx) => (
             <div key={idx}>
-              <h3 className="px-6 mb-2 text-[10px] font-black text-slate-500 uppercase tracking-widest">{cat.category}</h3>
+              <h3 className="px-6 mb-2 text-[10px] font-black text-sicredi-300 uppercase tracking-widest">{cat.category}</h3>
               <ul>
                 {cat.items.map(item => (
                   <li key={item.id}>
@@ -100,8 +100,8 @@ export const BaaSDashboard: React.FC = () => {
                       onClick={() => { setActiveTab(item.id); setSelectedSiloId(null); }}
                       className={`w-full flex items-center gap-3 px-6 py-2.5 text-sm font-medium transition-colors border-l-4 ${
                         activeTab === item.id 
-                          ? 'bg-slate-800 text-white border-blue-500' 
-                          : 'border-transparent hover:bg-slate-800 hover:text-white'
+                          ? 'bg-sicredi-800 text-white border-sicredigold-500'
+                          : 'border-transparent hover:bg-sicredi-800 hover:text-white'
                       }`}
                     >
                       <item.icon size={16} />
@@ -148,9 +148,9 @@ const MasterSilosGridView = ({ onSelectSilo }: { onSelectSilo: (id: string) => v
             const totalKg = producers.reduce((acc, p) => acc + ledgerService.getBalance(p.accountId, Currency.GRAIN_KG), 0);
             
             return (
-                <div key={t.id} className="bg-white p-6 rounded-[32px] border shadow-sm flex items-center justify-between hover:border-blue-300 transition-all cursor-pointer group" onClick={() => onSelectSilo(t.id)}>
+                <div key={t.id} className="bg-white p-6 rounded-[32px] border shadow-sm flex items-center justify-between hover:border-sicredi-300 transition-all cursor-pointer group" onClick={() => onSelectSilo(t.id)}>
                     <div className="flex items-center gap-4">
-                        <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${t.operationMode === SiloOperationMode.NATIVE ? 'bg-green-50 text-green-600' : 'bg-blue-50 text-blue-600'}`}>
+                        <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${t.operationMode === SiloOperationMode.NATIVE ? 'bg-sicredi-50 text-sicredi-600' : 'bg-sicredi-50 text-sicredi-600'}`}>
                             <Building2 size={28}/>
                         </div>
                         <div>
@@ -172,7 +172,7 @@ const MasterSilosGridView = ({ onSelectSilo }: { onSelectSilo: (id: string) => v
                         <div className="text-right">
                              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Saúde Sync</p>
                              <div className="flex items-center gap-1.5 justify-end">
-                                <div className={`w-1.5 h-1.5 rounded-full ${t.integrationSettings.status === 'HEALTHY' ? 'bg-green-500' : 'bg-amber-500'}`}></div>
+                                <div className={`w-1.5 h-1.5 rounded-full ${t.integrationSettings.status === 'HEALTHY' ? 'bg-sicredi-500' : 'bg-sicredigold-500'}`}></div>
                                 <span className="text-xs font-bold text-slate-700">{t.integrationSettings.status}</span>
                              </div>
                         </div>
@@ -181,7 +181,7 @@ const MasterSilosGridView = ({ onSelectSilo }: { onSelectSilo: (id: string) => v
                              <p className="text-sm font-black text-slate-900">{UnitConversionService.formatBRL(ledgerService.getBalance(t.liquidityConfig.masterAccountId || '', Currency.BRL))}</p>
                         </div>
                         {/* Fix: Added ChevronRight to imports to resolve undefined error */}
-                        <ChevronRight className="text-slate-200 group-hover:text-blue-500 transition-all" size={24}/>
+                        <ChevronRight className="text-slate-200 group-hover:text-sicredi-500 transition-all" size={24}/>
                     </div>
                 </div>
             )
@@ -203,7 +203,7 @@ const MasterSiloDetailView = ({ siloId, onBack }: { siloId: string, onBack: () =
 
             <div className="bg-white p-10 rounded-[40px] border shadow-sm flex justify-between items-center">
                  <div>
-                    <span className="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">{tenant.operationMode}</span>
+                    <span className="bg-sicredi-50 text-sicredi-600 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">{tenant.operationMode}</span>
                     <h2 className="text-4xl font-black text-slate-900 tracking-tighter mt-4">{tenant.name}</h2>
                     <p className="text-slate-400 font-medium">{tenant.document} • {tenant.city}/{tenant.state}</p>
                  </div>
@@ -211,8 +211,8 @@ const MasterSiloDetailView = ({ siloId, onBack }: { siloId: string, onBack: () =
                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Exposição Agregada</p>
                     <p className="text-3xl font-black text-slate-900">R$ 1,5M</p>
                     <div className="flex items-center gap-2 justify-end">
-                        <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-                        <span className="text-[10px] font-black text-green-600 uppercase">Integração Ativa</span>
+                        <div className="w-2 h-2 rounded-full bg-sicredi-500 animate-pulse"></div>
+                        <span className="text-[10px] font-black text-sicredi-600 uppercase">Integração Ativa</span>
                     </div>
                  </div>
             </div>
@@ -285,9 +285,9 @@ const FiscalAuditView = () => {
                 <td className="p-4 font-mono text-xs text-slate-500 truncate max-w-[150px]">{doc.accessKey}</td>
                 <td className="p-4 font-bold text-slate-700">{coreService.getTenantById(doc.siloId)?.name || doc.siloId}</td>
                 <td className="p-4 font-black">{UnitConversionService.formatKg(doc.finalWeightKg || doc.estimatedWeightKg)}</td>
-                <td className="p-4 font-mono text-[10px] text-blue-600">{doc.digitizationEventId}</td>
+                <td className="p-4 font-mono text-[10px] text-sicredi-600">{doc.digitizationEventId}</td>
                 <td className="p-4">
-                    <span className={`text-[10px] px-2 py-0.5 rounded font-black uppercase ${doc.status === 'CONFIRMED' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}>
+                    <span className={`text-[10px] px-2 py-0.5 rounded font-black uppercase ${doc.status === 'CONFIRMED' ? 'bg-sicredi-100 text-sicredi-700' : 'bg-sicredi-100 text-sicredi-700'}`}>
                         {NFE_STATUS_LABELS[doc.status] || doc.status}
                     </span>
                 </td>
@@ -351,9 +351,9 @@ const LedgerView = () => (
                     {ledgerService.getAllEntries().slice(0, 15).map(e => (
                         <tr key={e.id} className="border-t border-white/5">
                             <td className="py-2 opacity-60">{new Date(e.timestamp).toLocaleTimeString('pt-BR')}</td>
-                            <td className="py-2 text-blue-400 font-bold">{e.eventId}</td>
+                            <td className="py-2 text-sicredi-400 font-bold">{e.eventId}</td>
                             <td className="py-2 truncate max-w-[120px]">{e.accountId}</td>
-                            <td className={`py-2 text-right font-bold ${e.direction === 'CREDIT' ? 'text-green-400' : 'text-slate-100'}`}>{e.amount.toLocaleString('pt-BR')} {e.currency}</td>
+                            <td className={`py-2 text-right font-bold ${e.direction === 'CREDIT' ? 'text-sicredi-400' : 'text-slate-100'}`}>{e.amount.toLocaleString('pt-BR')} {e.currency}</td>
                         </tr>
                     ))}
                 </tbody>
@@ -377,7 +377,7 @@ const MerchantsView = () => {
                                 <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">{m.category}</p>
                             </div>
                         </div>
-                        <span className="bg-green-100 text-green-700 text-[10px] px-2 py-0.5 rounded font-black uppercase">Liquidando</span>
+                        <span className="bg-sicredi-100 text-sicredi-700 text-[10px] px-2 py-0.5 rounded font-black uppercase">Liquidando</span>
                     </div>
                 ))}
             </div>

@@ -43,14 +43,14 @@ export const IntegrationsView: React.FC = () => {
       <div className="mb-6 flex justify-between items-center">
         <div>
           <h2 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
-            <Server className="text-blue-600" />
+            <Server className="text-sicredi-600" />
             Integradores & Rails
           </h2>
           <p className="text-slate-500">Gestão de conexões bancárias, PIX/DICT e documentos fiscais</p>
         </div>
         <button 
             onClick={() => setWizardOpen(true)}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 flex items-center gap-2"
+            className="bg-sicredi-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-sicredi-700 flex items-center gap-2"
         >
           <Plus size={18} /> Novo Integrador
         </button>
@@ -65,7 +65,7 @@ export const IntegrationsView: React.FC = () => {
               <input 
                 type="text" 
                 placeholder="Buscar integrador..." 
-                className="w-full pl-10 pr-4 py-2 rounded-lg border border-slate-300 text-sm focus:outline-none focus:border-blue-500" 
+                className="w-full pl-10 pr-4 py-2 rounded-lg border border-slate-300 text-sm focus:outline-none focus:border-sicredi-500" 
               />
             </div>
           </div>
@@ -74,7 +74,7 @@ export const IntegrationsView: React.FC = () => {
               <button 
                 key={p.id}
                 onClick={() => setSelectedId(p.id)}
-                className={`w-full text-left p-4 border-b border-slate-100 hover:bg-slate-50 transition-colors ${selectedId === p.id ? 'bg-blue-50 border-l-4 border-l-blue-600' : 'border-l-4 border-l-transparent'}`}
+                className={`w-full text-left p-4 border-b border-slate-100 hover:bg-slate-50 transition-colors ${selectedId === p.id ? 'bg-sicredi-50 border-l-4 border-l-blue-600' : 'border-l-4 border-l-transparent'}`}
               >
                 <div className="flex justify-between items-start mb-1">
                   <span className="font-bold text-slate-800">{p.name}</span>
@@ -117,12 +117,12 @@ export const IntegrationsView: React.FC = () => {
 
 const StatusBadge = ({ status }: { status: IntegrationStatus }) => {
   const styles = {
-    [IntegrationStatus.UP]: 'bg-green-100 text-green-700',
+    [IntegrationStatus.UP]: 'bg-sicredi-100 text-sicredi-700',
     [IntegrationStatus.DOWN]: 'bg-red-100 text-red-700',
-    [IntegrationStatus.SLOW]: 'bg-amber-100 text-amber-700',
+    [IntegrationStatus.SLOW]: 'bg-sicredigold-100 text-sicredigold-700',
     [IntegrationStatus.MAINTENANCE]: 'bg-slate-100 text-slate-500',
     [IntegrationStatus.DISABLED]: 'bg-gray-100 text-gray-500',
-    [IntegrationStatus.ACTIVE]: 'bg-blue-100 text-blue-600'
+    [IntegrationStatus.ACTIVE]: 'bg-sicredi-100 text-sicredi-600'
   };
   const Icons = {
     [IntegrationStatus.UP]: CheckCircle,
@@ -187,7 +187,7 @@ const ProviderDetail: React.FC<{ provider: IntegrationProvider, onUpdate: () => 
           <button 
             key={t}
             onClick={() => setTab(t as any)}
-            className={`py-3 text-xs font-bold uppercase tracking-wider border-b-2 transition-colors ${tab === t ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-800'}`}
+            className={`py-3 text-xs font-bold uppercase tracking-wider border-b-2 transition-colors ${tab === t ? 'border-sicredi-600 text-sicredi-600' : 'border-transparent text-slate-500 hover:text-slate-800'}`}
           >
             {t}
           </button>
@@ -195,7 +195,7 @@ const ProviderDetail: React.FC<{ provider: IntegrationProvider, onUpdate: () => 
         {provider.type === IntegrationType.DICT && (
           <button 
             onClick={() => setTab('DICT')}
-            className={`py-3 text-xs font-bold uppercase tracking-wider border-b-2 transition-colors flex items-center gap-1 ${tab === 'DICT' ? 'border-amber-500 text-amber-600' : 'border-transparent text-slate-500 hover:text-slate-800'}`}
+            className={`py-3 text-xs font-bold uppercase tracking-wider border-b-2 transition-colors flex items-center gap-1 ${tab === 'DICT' ? 'border-sicredigold-500 text-sicredigold-600' : 'border-transparent text-slate-500 hover:text-slate-800'}`}
           >
             <Key size={14} /> DICT / PIX Engine
           </button>
@@ -315,7 +315,7 @@ const ConfigTab = ({ provider, onSave }: { provider: IntegrationProvider, onSave
                 <button 
                     onClick={handleSave}
                     disabled={!isDirty}
-                    className="bg-blue-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                    className="bg-sicredi-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-sicredi-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                 >
                     <Save size={18}/> Salvar Alterações
                 </button>
@@ -392,7 +392,7 @@ const WebhooksTab = ({ provider, onUpdate }: { provider: IntegrationProvider, on
                         {(provider.webhooks || []).map((wh) => (
                             <tr key={wh.id}>
                                 <td className="p-4 font-mono text-xs">{wh.url}</td>
-                                <td className="p-4"><span className="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs font-bold">{wh.events[0]}</span></td>
+                                <td className="p-4"><span className="bg-sicredi-100 text-sicredi-700 px-2 py-1 rounded text-xs font-bold">{wh.events[0]}</span></td>
                                 <td className="p-4 text-slate-400 text-xs">{wh.secretMasked}</td>
                                 <td className="p-4 text-right">
                                     <button onClick={() => handleRemove(wh.id)} className="text-red-500 hover:text-red-700"><Trash2 size={16}/></button>
@@ -470,7 +470,7 @@ const MappingTab = ({ provider, onUpdate }: { provider: IntegrationProvider, onU
                             <tr key={i} className="hover:bg-slate-50">
                                 <td className="p-4 font-mono font-bold text-slate-700">{m.externalEvent}</td>
                                 <td className="p-4 text-slate-400"><ArrowRight size={16}/></td>
-                                <td className="p-4 font-mono text-blue-600 font-bold">{m.internalEvent}</td>
+                                <td className="p-4 font-mono text-sicredi-600 font-bold">{m.internalEvent}</td>
                                 <td className="p-4 font-mono text-xs text-slate-500 truncate max-w-xs" title={m.transformJson}>{m.transformJson}</td>
                                 <td className="p-4 text-right">
                                     <button onClick={() => handleRemove(i)} className="text-red-500 hover:text-red-700"><Trash2 size={16}/></button>
@@ -525,7 +525,7 @@ const DictTab = () => {
                      <h3 className="font-bold text-slate-800">DICT Operations Console</h3>
                      <p className="text-xs text-slate-500">Diretório de Identificadores de Contas Transacionais (BACEN Compliant)</p>
                  </div>
-                 <div className="flex items-center gap-2 bg-green-50 text-green-700 px-3 py-2 rounded-lg text-xs font-bold border border-green-100">
+                 <div className="flex items-center gap-2 bg-sicredi-50 text-sicredi-700 px-3 py-2 rounded-lg text-xs font-bold border border-sicredi-100">
                      <Lock size={12}/> API v2.8.0
                  </div>
             </div>
@@ -542,7 +542,7 @@ const DictTab = () => {
                     <button 
                         onClick={handleSearch}
                         disabled={loading}
-                        className="bg-blue-600 text-white px-6 py-2 rounded-lg font-bold text-sm disabled:opacity-50"
+                        className="bg-sicredi-600 text-white px-6 py-2 rounded-lg font-bold text-sm disabled:opacity-50"
                     >
                         {loading ? 'Consultando...' : 'Resolver Chave'}
                     </button>
@@ -690,7 +690,7 @@ const CreateIntegratorWizard = ({ onCancel, onSuccess }: { onCancel: () => void,
                     <button onClick={() => setStep(s => s - 1)} className="px-4 py-2 text-slate-600 font-bold">Voltar</button>
                 ) : <div></div>}
                 
-                <button onClick={handleNext} className="bg-blue-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-blue-700 flex items-center gap-2">
+                <button onClick={handleNext} className="bg-sicredi-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-sicredi-700 flex items-center gap-2">
                     {step === 3 ? 'Criar Integrador' : 'Próximo'} <ArrowRight size={16}/>
                 </button>
             </div>

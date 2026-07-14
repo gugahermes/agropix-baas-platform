@@ -39,7 +39,7 @@ export const BaaSOrchestratorConsole: React.FC<ConsoleProps> = ({ initialTab }) 
             </h2>
             <p className="text-slate-500">Núcleo de integração entre Contas Agro (Grãos) e Sistema Bancário (CVU).</p>
           </div>
-          <div className="bg-blue-50 text-blue-700 px-3 py-1 rounded-lg text-xs font-bold border border-blue-100 flex items-center gap-2">
+          <div className="bg-sicredi-50 text-sicredi-700 px-3 py-1 rounded-lg text-xs font-bold border border-sicredi-100 flex items-center gap-2">
               <RefreshCw size={12} className="animate-spin-slow"/> Motor Ativo
           </div>
       </div>
@@ -83,9 +83,9 @@ const OverviewTab = () => {
         <div className="space-y-6">
             <div className="grid grid-cols-4 gap-6">
                 <StatCard label="Sub-CVUs (Produtores)" value={stats.totalCvus} icon={<UserIcon size={20}/>} />
-                <StatCard label="Links Ativos" value={stats.activeLinks} icon={<Link2 size={20}/>} color="bg-green-50 text-green-700"/>
-                <StatCard label="Silo Master Liquidez" value={UnitConversionService.formatBRL(masterBal)} icon={<Building size={20}/>} color="bg-amber-50 text-amber-700"/>
-                <StatCard label="AgroPix Fees" value={UnitConversionService.formatBRL(clearingBal)} icon={<Briefcase size={20}/>} color="bg-purple-50 text-purple-700"/>
+                <StatCard label="Links Ativos" value={stats.activeLinks} icon={<Link2 size={20}/>} color="bg-sicredi-50 text-sicredi-700"/>
+                <StatCard label="Silo Master Liquidez" value={UnitConversionService.formatBRL(masterBal)} icon={<Building size={20}/>} color="bg-sicredigold-50 text-sicredigold-700"/>
+                <StatCard label="AgroPix Fees" value={UnitConversionService.formatBRL(clearingBal)} icon={<Briefcase size={20}/>} color="bg-sicredigold-50 text-sicredigold-700"/>
             </div>
 
             <div className="grid grid-cols-2 gap-6">
@@ -98,7 +98,7 @@ const OverviewTab = () => {
                                 <span className="font-bold text-slate-900">{UnitConversionService.formatBRL(masterBal)}</span>
                             </div>
                             <div className="w-full bg-slate-100 rounded-full h-2">
-                                <div className="bg-amber-500 h-2 rounded-full" style={{width: '100%'}}></div>
+                                <div className="bg-sicredigold-500 h-2 rounded-full" style={{width: '100%'}}></div>
                             </div>
                         </div>
                         <div>
@@ -107,7 +107,7 @@ const OverviewTab = () => {
                                 <span className="font-bold text-slate-900">{UnitConversionService.formatBRL(stats.totalDailyExposure)}</span>
                             </div>
                             <div className="w-full bg-slate-100 rounded-full h-2">
-                                <div className="bg-blue-500 h-2 rounded-full" style={{width: `${(stats.totalDailyExposure/masterBal)*100}%`}}></div>
+                                <div className="bg-sicredi-500 h-2 rounded-full" style={{width: `${(stats.totalDailyExposure/masterBal)*100}%`}}></div>
                             </div>
                         </div>
                         <div>
@@ -116,7 +116,7 @@ const OverviewTab = () => {
                                 <span className="font-bold text-slate-900">{UnitConversionService.formatBRL(stats.usedToday)}</span>
                             </div>
                             <div className="w-full bg-slate-100 rounded-full h-2">
-                                <div className="bg-green-500 h-2 rounded-full" style={{width: `${(stats.usedToday/masterBal)*100}%`}}></div>
+                                <div className="bg-sicredi-500 h-2 rounded-full" style={{width: `${(stats.usedToday/masterBal)*100}%`}}></div>
                             </div>
                         </div>
                     </div>
@@ -126,17 +126,17 @@ const OverviewTab = () => {
                     <h3 className="font-bold text-slate-800 mb-4">Clearing & Conciliação</h3>
                     <div className="flex items-center gap-4 text-sm mb-4">
                         <div className="flex items-center gap-2">
-                            <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                            <div className="w-2 h-2 rounded-full bg-sicredi-500"></div>
                             <span className="text-slate-600">Integridade Ledger</span>
                         </div>
                         <div className="flex items-center gap-2">
-                            <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                            <div className="w-2 h-2 rounded-full bg-sicredi-500"></div>
                             <span className="text-slate-600">Conciliação DICT</span>
                         </div>
                     </div>
-                    <div className="p-4 bg-purple-50 rounded-lg border border-purple-100">
-                        <span className="text-xs font-bold text-purple-800 uppercase tracking-wide">Comissões Acumuladas</span>
-                        <p className="text-2xl font-bold text-purple-900 mt-1">{UnitConversionService.formatBRL(clearingBal)}</p>
+                    <div className="p-4 bg-sicredigold-50 rounded-lg border border-sicredigold-100">
+                        <span className="text-xs font-bold text-sicredigold-800 uppercase tracking-wide">Comissões Acumuladas</span>
+                        <p className="text-2xl font-bold text-sicredigold-900 mt-1">{UnitConversionService.formatBRL(clearingBal)}</p>
                     </div>
                 </div>
             </div>
@@ -163,14 +163,14 @@ const CvuTab = () => {
 
     return (
         <div className="space-y-6">
-            <div className="bg-purple-50 p-4 rounded-xl border border-purple-100 flex justify-between items-center">
+            <div className="bg-sicredigold-50 p-4 rounded-xl border border-sicredigold-100 flex justify-between items-center">
                 <div>
-                    <h3 className="font-bold text-purple-900">{clearing?.alias}</h3>
-                    <p className="text-xs text-purple-700">Conta de Receita AgroPix</p>
+                    <h3 className="font-bold text-sicredigold-900">{clearing?.alias}</h3>
+                    <p className="text-xs text-sicredigold-700">Conta de Receita AgroPix</p>
                 </div>
                 <div className="text-right">
-                    <span className="text-xs text-purple-600 font-bold uppercase">Saldo Atual</span>
-                    <p className="text-xl font-bold text-purple-900">{UnitConversionService.formatBRL(ledgerService.getBalance(clearing?.id || '', Currency.BRL))}</p>
+                    <span className="text-xs text-sicredigold-600 font-bold uppercase">Saldo Atual</span>
+                    <p className="text-xl font-bold text-sicredigold-900">{UnitConversionService.formatBRL(ledgerService.getBalance(clearing?.id || '', Currency.BRL))}</p>
                 </div>
             </div>
 
@@ -178,17 +178,17 @@ const CvuTab = () => {
                 const subs = getSubs(master.id);
                 return (
                     <div key={master.id} className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
-                        <div className="p-4 bg-amber-50 border-b border-amber-100 flex justify-between items-center">
+                        <div className="p-4 bg-sicredigold-50 border-b border-sicredigold-100 flex justify-between items-center">
                             <div className="flex items-center gap-3">
-                                <Building className="text-amber-600"/>
+                                <Building className="text-sicredigold-600"/>
                                 <div>
-                                    <h3 className="font-bold text-amber-900">{master.alias} (Master)</h3>
-                                    <p className="text-xs text-amber-700 font-mono">{master.id}</p>
+                                    <h3 className="font-bold text-sicredigold-900">{master.alias} (Master)</h3>
+                                    <p className="text-xs text-sicredigold-700 font-mono">{master.id}</p>
                                 </div>
                             </div>
                             <div className="text-right">
-                                <span className="text-xs text-amber-600 font-bold uppercase">Liquidez Pool</span>
-                                <p className="text-xl font-bold text-amber-900">{UnitConversionService.formatBRL(ledgerService.getBalance(master.id, Currency.BRL))}</p>
+                                <span className="text-xs text-sicredigold-600 font-bold uppercase">Liquidez Pool</span>
+                                <p className="text-xl font-bold text-sicredigold-900">{UnitConversionService.formatBRL(ledgerService.getBalance(master.id, Currency.BRL))}</p>
                             </div>
                         </div>
                         <table className="w-full text-sm text-left">
@@ -211,7 +211,7 @@ const CvuTab = () => {
                                         <td className="p-3 text-right font-mono text-slate-600">
                                             {UnitConversionService.formatBRL(ledgerService.getBalance(sub.id, Currency.BRL))}
                                         </td>
-                                        <td className="p-3"><span className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded font-bold">ATIVA</span></td>
+                                        <td className="p-3"><span className="bg-sicredi-100 text-sicredi-700 text-xs px-2 py-1 rounded font-bold">ATIVA</span></td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -230,7 +230,7 @@ const OrchestratorCoreTab = () => {
         <div className="space-y-6">
             <div className="bg-slate-900 text-white p-6 rounded-xl shadow-lg">
                 <h3 className="text-lg font-bold mb-2 flex items-center gap-2">
-                    <Lock size={20} className="text-green-400"/> Core Logic Flow
+                    <Lock size={20} className="text-sicredi-400"/> Core Logic Flow
                 </h3>
                 <p className="text-slate-300 max-w-2xl text-sm">
                     Visualização do fluxo de autorização de pagamentos. A transação só ocorre se passar por todos os Gates (Colateral, Limite, Liquidez Master).
@@ -249,42 +249,42 @@ const OrchestratorCoreTab = () => {
                         <div key={link.id} className="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
                             <div className="flex justify-between mb-6">
                                 <h4 className="font-bold text-slate-800">Link: {link.id}</h4>
-                                <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-bold">ACTIVE</span>
+                                <span className="bg-sicredi-100 text-sicredi-800 px-2 py-1 rounded text-xs font-bold">ACTIVE</span>
                             </div>
 
                             <div className="flex items-center justify-between text-sm">
                                 {/* Step 1: Grain */}
                                 <div className="text-center w-1/4">
-                                    <div className="w-10 h-10 mx-auto bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mb-2">
+                                    <div className="w-10 h-10 mx-auto bg-sicredigold-100 text-sicredigold-600 rounded-full flex items-center justify-center mb-2">
                                         1
                                     </div>
                                     <p className="font-bold text-slate-700">Agro Wallet</p>
                                     <p className="text-slate-500">{UnitConversionService.formatTon(agroBal)}</p>
-                                    <CheckCircle size={16} className="mx-auto mt-1 text-green-500" />
+                                    <CheckCircle size={16} className="mx-auto mt-1 text-sicredi-500" />
                                 </div>
 
                                 <ArrowRight className="text-slate-300"/>
 
                                 {/* Step 2: Limit */}
                                 <div className="text-center w-1/4">
-                                    <div className={`w-10 h-10 mx-auto rounded-full flex items-center justify-center mb-2 ${limitOk ? 'bg-blue-100 text-blue-600' : 'bg-red-100 text-red-600'}`}>
+                                    <div className={`w-10 h-10 mx-auto rounded-full flex items-center justify-center mb-2 ${limitOk ? 'bg-sicredi-100 text-sicredi-600' : 'bg-red-100 text-red-600'}`}>
                                         2
                                     </div>
                                     <p className="font-bold text-slate-700">Daily Limit</p>
                                     <p className="text-slate-500">{Math.round((link.usedTodayBrl/link.dailyLimitBrl)*100)}% Used</p>
-                                    {limitOk ? <CheckCircle size={16} className="mx-auto mt-1 text-green-500" /> : <AlertTriangle size={16} className="mx-auto mt-1 text-red-500" />}
+                                    {limitOk ? <CheckCircle size={16} className="mx-auto mt-1 text-sicredi-500" /> : <AlertTriangle size={16} className="mx-auto mt-1 text-red-500" />}
                                 </div>
 
                                 <ArrowRight className="text-slate-300"/>
 
                                 {/* Step 3: Master Liquidity */}
                                 <div className="text-center w-1/4">
-                                    <div className={`w-10 h-10 mx-auto rounded-full flex items-center justify-center mb-2 ${liquidityOk ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
+                                    <div className={`w-10 h-10 mx-auto rounded-full flex items-center justify-center mb-2 ${liquidityOk ? 'bg-sicredi-100 text-sicredi-600' : 'bg-red-100 text-red-600'}`}>
                                         3
                                     </div>
                                     <p className="font-bold text-slate-700">Silo Master</p>
                                     <p className="text-slate-500">Liquidity OK</p>
-                                    {liquidityOk ? <CheckCircle size={16} className="mx-auto mt-1 text-green-500" /> : <AlertTriangle size={16} className="mx-auto mt-1 text-red-500" />}
+                                    {liquidityOk ? <CheckCircle size={16} className="mx-auto mt-1 text-sicredi-500" /> : <AlertTriangle size={16} className="mx-auto mt-1 text-red-500" />}
                                 </div>
 
                                 <ArrowRight className="text-slate-300"/>
@@ -337,7 +337,7 @@ const LimitsTab = () => {
                                 <td className="p-3">
                                     <button 
                                         onClick={() => alert('Demo: Modal de Edição de Limite')}
-                                        className="text-blue-600 font-medium hover:underline"
+                                        className="text-sicredi-600 font-medium hover:underline"
                                     >
                                         Editar Limite
                                     </button>

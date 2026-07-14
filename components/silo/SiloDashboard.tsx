@@ -49,8 +49,8 @@ export const SiloDashboard: React.FC<{ user: User }> = ({ user }) => {
   return (
     <div className="flex h-[calc(100vh-100px)] bg-slate-50 rounded-2xl border border-slate-200 overflow-hidden shadow-xl">
       {/* Sidebar Silo */}
-      <div className="w-64 bg-slate-900 text-slate-300 flex flex-col border-r border-slate-800">
-        <div className="p-6 border-b border-slate-800 text-center">
+      <div className="w-64 bg-sicredi-900 text-sicredi-100 flex flex-col border-r border-sicredi-800">
+        <div className="p-6 border-b border-sicredi-800 text-center">
           <h2 className="text-white font-black tracking-widest text-[10px] uppercase opacity-50 mb-1">AgroPix Silo</h2>
           <p className="text-lg font-bold text-white truncate px-2">{silo.name}</p>
         </div>
@@ -59,23 +59,23 @@ export const SiloDashboard: React.FC<{ user: User }> = ({ user }) => {
           <nav className="space-y-1">
             <SidebarItem active={activeTab === 'DASHBOARD'} icon={<LayoutDashboard size={18} />} label="Dashboard" onClick={() => setActiveTab('DASHBOARD')} />
             
-            <div className="px-6 py-3 text-[10px] font-black text-slate-500 uppercase tracking-widest">Operacional</div>
+            <div className="px-6 py-3 text-[10px] font-black text-sicredi-300 uppercase tracking-widest">Operacional</div>
             <SidebarItem active={activeTab === 'CLIENTS'} icon={<Users size={18} />} label="Produtores" onClick={() => { setActiveTab('CLIENTS'); setSelectedProducerId(null); }} />
             <SidebarItem active={activeTab === 'FISCAL'} icon={<FileText size={18} />} label="NF-e & Balança" onClick={() => setActiveTab('FISCAL')} />
             
-            <div className="px-6 py-3 text-[10px] font-black text-slate-500 uppercase tracking-widest">Fintech</div>
+            <div className="px-6 py-3 text-[10px] font-black text-sicredi-300 uppercase tracking-widest">Fintech</div>
             <SidebarItem active={activeTab === 'QUOTATION'} icon={<TrendingUp size={18} />} label="Cotação Regional" onClick={() => setActiveTab('QUOTATION')} />
             
-            <div className="px-6 py-3 text-[10px] font-black text-slate-500 uppercase tracking-widest">Configurações</div>
+            <div className="px-6 py-3 text-[10px] font-black text-sicredi-300 uppercase tracking-widest">Configurações</div>
             <SidebarItem active={activeTab === 'INTEGRATION'} icon={<Zap size={18} />} label="Integração & Sync" onClick={() => setActiveTab('INTEGRATION')} />
             <SidebarItem active={activeTab === 'COMMODITIES'} icon={<Wheat size={18} />} label="Commodities" onClick={() => setActiveTab('COMMODITIES')} />
             <SidebarItem active={activeTab === 'CONFIG'} icon={<ShieldCheck size={18} />} label="Compliance" onClick={() => setActiveTab('CONFIG')} />
           </nav>
         </div>
 
-        <div className="p-4 bg-slate-950 border-t border-slate-800">
-             <div className="flex items-center gap-2 text-[9px] font-black text-slate-500 uppercase tracking-tighter">
-                <div className={`w-2 h-2 rounded-full ${silo.operationMode === SiloOperationMode.NATIVE ? 'bg-green-500' : 'bg-blue-500'}`}></div>
+        <div className="p-4 bg-sicredi-950 border-t border-sicredi-800">
+             <div className="flex items-center gap-2 text-[9px] font-black text-sicredi-300 uppercase tracking-tighter">
+                <div className={`w-2 h-2 rounded-full ${silo.operationMode === SiloOperationMode.NATIVE ? 'bg-sicredi-500' : 'bg-sicredi-500'}`}></div>
                 Modo: {silo.operationMode}
              </div>
         </div>
@@ -95,8 +95,8 @@ const SidebarItem = ({ active, icon, label, onClick }: any) => (
     onClick={onClick}
     className={`w-full flex items-center gap-3 px-6 py-2.5 text-sm font-medium transition-all ${
       active 
-        ? 'bg-slate-800 text-white border-l-4 border-blue-500' 
-        : 'text-slate-400 hover:text-white hover:bg-slate-800 border-l-4 border-transparent'
+        ? 'bg-sicredi-800 text-white border-l-4 border-sicredigold-500'
+        : 'text-sicredi-200 hover:text-white hover:bg-sicredi-800 border-l-4 border-transparent'
     }`}
   >
     {icon}
@@ -116,11 +116,11 @@ const SiloSetupWizard = ({ silo, onComplete }: { silo: Tenant, onComplete: () =>
     };
 
     return (
-        <div className="min-h-screen bg-slate-950 flex items-center justify-center p-6">
+        <div className="min-h-screen bg-sicredi-950 flex items-center justify-center p-6">
             <div className="bg-white rounded-[40px] shadow-2xl max-w-2xl w-full overflow-hidden animate-in zoom-in-95 duration-500">
                 <div className="p-10 border-b">
                     <div className="flex items-center gap-4 mb-6">
-                        <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-lg">
+                        <div className="w-12 h-12 bg-sicredi-600 rounded-2xl flex items-center justify-center text-white shadow-lg">
                             <Settings size={28}/>
                         </div>
                         <div>
@@ -136,15 +136,15 @@ const SiloSetupWizard = ({ silo, onComplete }: { silo: Tenant, onComplete: () =>
                              <ModeOption active={mode === SiloOperationMode.NATIVE} label="Nativo" onClick={() => setMode(SiloOperationMode.NATIVE)} />
                         </div>
 
-                        <div className="p-6 bg-blue-50 rounded-[32px] border border-blue-100">
+                        <div className="p-6 bg-sicredi-50 rounded-[32px] border border-sicredi-100">
                             {mode === SiloOperationMode.INTEGRATION && (
-                                <p className="text-sm text-blue-900 font-medium"><strong>Modo Integração:</strong> O AgroPix funciona como uma camada de liquidez. Seus dados de saldo e produtores vêm 100% do seu sistema ERP atual via API ou Sincronização.</p>
+                                <p className="text-sm text-sicredi-900 font-medium"><strong>Modo Integração:</strong> O AgroPix funciona como uma camada de liquidez. Seus dados de saldo e produtores vêm 100% do seu sistema ERP atual via API ou Sincronização.</p>
                             )}
                             {mode === SiloOperationMode.HYBRID && (
-                                <p className="text-sm text-blue-900 font-medium"><strong>Modo Híbrido:</strong> Você mantém seu sistema legado para balança e recebimento, mas usa o AgroPix para a gestão financeira e digitalização definitiva.</p>
+                                <p className="text-sm text-sicredi-900 font-medium"><strong>Modo Híbrido:</strong> Você mantém seu sistema legado para balança e recebimento, mas usa o AgroPix para a gestão financeira e digitalização definitiva.</p>
                             )}
                             {mode === SiloOperationMode.NATIVE && (
-                                <p className="text-sm text-blue-900 font-medium"><strong>Modo Nativo:</strong> O AgroPix assume como sistema operacional principal. Gestão total de produtores, NF-e, Balança e Estoque Digital dentro da plataforma.</p>
+                                <p className="text-sm text-sicredi-900 font-medium"><strong>Modo Nativo:</strong> O AgroPix assume como sistema operacional principal. Gestão total de produtores, NF-e, Balança e Estoque Digital dentro da plataforma.</p>
                             )}
                         </div>
                     </div>
@@ -185,12 +185,12 @@ const IntegrationMigrationTab = ({ silo, onRefresh }: { silo: Tenant, onRefresh:
                 <div>
                     <h2 className="text-2xl font-black text-slate-800">Integração & Migração Legada</h2>
                     <p className="text-slate-500 font-medium flex items-center gap-2">
-                        <LinkIcon size={14} className="text-blue-600"/> Connector v1.4 • Ativo via {silo.integrationSettings.protocol}
+                        <LinkIcon size={14} className="text-sicredi-600"/> Connector v1.4 • Ativo via {silo.integrationSettings.protocol}
                     </p>
                 </div>
                 <div className="flex gap-3">
                     <button className="p-3 bg-white border rounded-xl hover:bg-slate-50"><Download size={20}/></button>
-                    <button onClick={handleSyncNow} disabled={isSyncing} className="bg-blue-600 text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 shadow-lg active:scale-95 transition-all">
+                    <button onClick={handleSyncNow} disabled={isSyncing} className="bg-sicredi-600 text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 shadow-lg active:scale-95 transition-all">
                         {isSyncing ? <RefreshCw className="animate-spin" size={18}/> : <RefreshCw size={18}/>}
                         Sincronizar Agora
                     </button>
@@ -200,7 +200,7 @@ const IntegrationMigrationTab = ({ silo, onRefresh }: { silo: Tenant, onRefresh:
             <div className="bg-white rounded-[40px] border shadow-sm overflow-hidden flex flex-col h-[500px]">
                 <div className="px-8 border-b bg-slate-50/50 flex gap-8">
                     {['SYNC', 'MAPPING', 'LOGS'].map(t => (
-                        <button key={t} onClick={() => setTab(t as any)} className={`py-4 text-xs font-black uppercase tracking-widest border-b-2 transition-all ${tab === t ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-400 hover:text-slate-600'}`}>{t}</button>
+                        <button key={t} onClick={() => setTab(t as any)} className={`py-4 text-xs font-black uppercase tracking-widest border-b-2 transition-all ${tab === t ? 'border-sicredi-600 text-sicredi-600' : 'border-transparent text-slate-400 hover:text-slate-600'}`}>{t}</button>
                     ))}
                 </div>
 
@@ -208,7 +208,7 @@ const IntegrationMigrationTab = ({ silo, onRefresh }: { silo: Tenant, onRefresh:
                     {tab === 'SYNC' && (
                         <div className="space-y-6">
                             <div className="grid grid-cols-3 gap-6">
-                                <StatCardMini label="Saúde da Sync" value="HEALTHY" status="bg-green-500" />
+                                <StatCardMini label="Saúde da Sync" value="HEALTHY" status="bg-sicredi-500" />
                                 <StatCardMini label="Última Carga" value="14:32 (Hoje)" />
                                 <StatCardMini label="Frequência" value={`${silo.integrationSettings.syncIntervalMinutes}m`} />
                             </div>
@@ -249,14 +249,14 @@ const MappingRow = ({ label, field, value }: any) => (
         <span className="text-xs font-bold text-slate-500 w-1/3">{label}</span>
         <div className="flex-1 bg-white p-2 border rounded-lg font-mono text-[10px] text-slate-400">{field}</div>
         <ArrowRight size={16} className="text-slate-300"/>
-        <div className="flex-1 bg-blue-50 p-2 border border-blue-100 rounded-lg font-mono text-[10px] text-blue-600 font-bold">{value}</div>
+        <div className="flex-1 bg-sicredi-50 p-2 border border-sicredi-100 rounded-lg font-mono text-[10px] text-sicredi-600 font-bold">{value}</div>
     </div>
 )
 
 const LogLine = ({ time, msg, type }: any) => (
     <div className="p-3 bg-slate-50 rounded-xl flex gap-3 text-[11px] font-mono border border-slate-100">
         <span className="text-slate-400">{time}</span>
-        <span className={type === 'warn' ? 'text-amber-600' : type === 'success' ? 'text-green-600' : 'text-slate-700'}>{msg}</span>
+        <span className={type === 'warn' ? 'text-sicredigold-600' : type === 'success' ? 'text-sicredi-600' : 'text-slate-700'}>{msg}</span>
     </div>
 )
 
@@ -303,7 +303,7 @@ const CommodityManagementTab = ({ silo, onRefresh }: { silo: Tenant, onRefresh: 
                         <div className="flex justify-between items-center pt-4 border-t border-dashed">
                              <span className="text-xs font-bold text-slate-400 italic">Safra Ativa: {c.activeSafra}</span>
                              <div className="flex items-center gap-2">
-                                <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                                <div className="w-2 h-2 rounded-full bg-sicredi-500"></div>
                                 <span className="text-[10px] font-black text-slate-600 uppercase">Operando</span>
                              </div>
                         </div>
@@ -350,7 +350,7 @@ const QuotationTab = ({ user }: { user: User }) => {
                 <div>
                     <h2 className="text-2xl font-black text-slate-800 tracking-tight">Motor de Cotações Regional</h2>
                     <p className="text-slate-500 flex items-center gap-2 font-medium">
-                        <Globe size={14} className="text-green-600"/>
+                        <Globe size={14} className="text-sicredi-600"/>
                         Configure a engenharia de preço. O produtor vê apenas o valor final.
                     </p>
                 </div>
@@ -369,7 +369,7 @@ const QuotationTab = ({ user }: { user: User }) => {
                 <div className="lg:col-span-1 bg-white p-8 rounded-[40px] border border-slate-200 shadow-sm flex flex-col justify-center items-center text-center">
                     <p className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mb-4">Cotação Publicada no APP</p>
                     <h3 className="text-5xl font-black text-slate-900 tracking-tighter mb-2">{UnitConversionService.formatBRL(calcResult.final)}</h3>
-                    <p className="text-xs font-bold text-green-600 bg-green-50 px-3 py-1 rounded-full uppercase tracking-widest">Base: {activeSource.name}</p>
+                    <p className="text-xs font-bold text-sicredi-600 bg-sicredi-50 px-3 py-1 rounded-full uppercase tracking-widest">Base: {activeSource.name}</p>
                     
                     <div className="mt-8 pt-8 border-t w-full space-y-4">
                          <div className="flex justify-between text-xs font-bold">
@@ -378,13 +378,13 @@ const QuotationTab = ({ user }: { user: User }) => {
                          </div>
                          <div className="flex justify-between text-xs font-bold">
                              <span className="text-slate-400 uppercase tracking-widest">Spread / Margem</span>
-                             <span className={calcResult.margin >= 0 ? 'text-green-500' : 'text-red-500'}>
+                             <span className={calcResult.margin >= 0 ? 'text-sicredi-500' : 'text-red-500'}>
                                  {calcResult.margin >= 0 ? '+' : ''} {UnitConversionService.formatBRL(calcResult.margin)}
                              </span>
                          </div>
                          <div className="flex justify-between text-xs font-bold">
                              <span className="text-slate-400 uppercase tracking-widest">Logística + Op</span>
-                             <span className="text-blue-500">+ {UnitConversionService.formatBRL(calcResult.logistics + config.adjustmentsSaca)}</span>
+                             <span className="text-sicredi-500">+ {UnitConversionService.formatBRL(calcResult.logistics + config.adjustmentsSaca)}</span>
                          </div>
                          <div className="bg-slate-50 p-4 rounded-2xl border border-dashed border-slate-200 mt-2">
                              <p className="text-[9px] font-black text-slate-400 uppercase mb-1 tracking-widest">Valor Canônico Ledger</p>
@@ -397,7 +397,7 @@ const QuotationTab = ({ user }: { user: User }) => {
                 <div className="lg:col-span-2 bg-white p-8 rounded-[40px] border border-slate-200 shadow-sm space-y-8">
                     <div>
                         <h4 className="font-black text-slate-800 uppercase tracking-widest text-xs flex items-center gap-2 mb-6">
-                            <Calculator size={16} className="text-blue-500"/> Parâmetros de Formação
+                            <Calculator size={16} className="text-sicredi-500"/> Parâmetros de Formação
                         </h4>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -408,11 +408,11 @@ const QuotationTab = ({ user }: { user: User }) => {
                                         <button 
                                             key={s.id}
                                             onClick={() => setConfig({...config, activeSourceId: s.id})}
-                                            className={`p-4 rounded-2xl border text-left transition-all ${config.activeSourceId === s.id ? 'border-blue-600 bg-blue-50 ring-2 ring-blue-100' : 'border-slate-100 hover:bg-slate-50'}`}
+                                            className={`p-4 rounded-2xl border text-left transition-all ${config.activeSourceId === s.id ? 'border-sicredi-600 bg-sicredi-50 ring-2 ring-sicredi-100' : 'border-slate-100 hover:bg-slate-50'}`}
                                         >
                                             <p className="text-xs font-black text-slate-800 uppercase">{s.name}</p>
                                             <p className="text-[10px] text-slate-400 font-bold uppercase">{s.region || 'Mercado'}</p>
-                                            <p className="mt-2 text-lg font-black text-blue-700">{UnitConversionService.formatBRL(s.basePriceSaca)}</p>
+                                            <p className="mt-2 text-lg font-black text-sicredi-700">{UnitConversionService.formatBRL(s.basePriceSaca)}</p>
                                         </button>
                                     ))}
                                 </div>
@@ -436,7 +436,7 @@ const QuotationTab = ({ user }: { user: User }) => {
                                 <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">Valor da Margem</label>
                                 <input 
                                     type="number" 
-                                    className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl font-bold focus:ring-2 focus:ring-blue-500"
+                                    className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl font-bold focus:ring-2 focus:ring-sicredi-500"
                                     value={config.marginValue}
                                     onChange={e => setConfig({...config, marginValue: parseFloat(e.target.value)})}
                                 />
@@ -468,8 +468,8 @@ const QuotationTab = ({ user }: { user: User }) => {
                         </div>
                     </div>
 
-                    <div className="p-5 bg-blue-50 rounded-[32px] border border-blue-100 flex gap-4 items-start text-blue-900">
-                        <ShieldCheck size={24} className="shrink-0 text-blue-600 mt-1"/>
+                    <div className="p-5 bg-sicredi-50 rounded-[32px] border border-sicredi-100 flex gap-4 items-start text-sicredi-900">
+                        <ShieldCheck size={24} className="shrink-0 text-sicredi-600 mt-1"/>
                         <div className="space-y-1">
                             <p className="text-xs font-black uppercase tracking-widest">Garantia de Compliance</p>
                             <p className="text-[11px] font-medium leading-relaxed">
@@ -498,31 +498,31 @@ const SiloOperationalDashboard: React.FC<{ user: User }> = ({ user }) => {
           <h2 className="text-2xl font-black text-slate-800 tracking-tight">Dashboard Operacional</h2>
           <p className="text-slate-500 font-medium">Modo {silo.operationMode} • Lastro Industrial Auditado</p>
         </div>
-        <div className="bg-blue-50 text-blue-700 px-4 py-1.5 rounded-xl text-xs font-bold border border-blue-100 flex items-center gap-2">
+        <div className="bg-sicredi-50 text-sicredi-700 px-4 py-1.5 rounded-xl text-xs font-bold border border-sicredi-100 flex items-center gap-2">
             <Clock size={14} /> Sync Ativa ({silo.integrationSettings.status})
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <StatCardSilo label="Produtores" value={producers.length} icon={<Users size={20}/>} color="bg-blue-600" />
-        <StatCardSilo label="Fila Balança" value={pendingCount} icon={<Truck size={20}/>} color="bg-amber-600" />
+        <StatCardSilo label="Produtores" value={producers.length} icon={<Users size={20}/>} color="bg-sicredi-600" />
+        <StatCardSilo label="Fila Balança" value={pendingCount} icon={<Truck size={20}/>} color="bg-sicredigold-600" />
         <StatCardSilo 
             label="Custódia Digital" 
             value={UnitConversionService.formatKg(totalGrainKg)} 
             icon={<Database size={20}/>} 
-            color="bg-green-600" 
+            color="bg-sicredi-600" 
         />
         <StatCardSilo label="Funding Pool" value={UnitConversionService.formatBRL(ledgerService.getBalance(silo?.liquidityConfig.masterAccountId || '', Currency.BRL))} icon={<Wallet size={20}/>} color="bg-slate-900" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-white p-6 rounded-[32px] border border-slate-200 shadow-sm">
-          <h3 className="font-bold text-slate-800 mb-4 flex items-center gap-2"><Truck size={18} className="text-blue-500"/> Fila de Balança (NF-e)</h3>
+          <h3 className="font-bold text-slate-800 mb-4 flex items-center gap-2"><Truck size={18} className="text-sicredi-500"/> Fila de Balança (NF-e)</h3>
           <div className="space-y-3">
              {nfes.filter(n => n.status === NFeStatus.ISSUED).map(n => (
-               <div key={n.id} className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100 group hover:border-blue-300 transition-all cursor-pointer">
+               <div key={n.id} className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100 group hover:border-sicredi-300 transition-all cursor-pointer">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-white rounded-xl border flex items-center justify-center font-black text-xs uppercase text-slate-500 group-hover:bg-blue-50">{n.plate}</div>
+                    <div className="w-10 h-10 bg-white rounded-xl border flex items-center justify-center font-black text-xs uppercase text-slate-500 group-hover:bg-sicredi-50">{n.plate}</div>
                     <div>
                         <p className="text-sm font-black text-slate-800">{UnitConversionService.formatKg(n.estimatedWeightKg)}</p>
                         <p className="text-[10px] text-slate-400 font-bold uppercase">{UnitConversionService.formatSacas(n.estimatedWeightKg)}</p>
@@ -536,11 +536,11 @@ const SiloOperationalDashboard: React.FC<{ user: User }> = ({ user }) => {
         </div>
 
         <div className="bg-white p-6 rounded-[32px] border border-slate-200 shadow-sm flex flex-col justify-center items-center text-center py-12">
-            <Zap size={48} className="text-blue-200 mb-4"/>
+            <Zap size={48} className="text-sicredi-200 mb-4"/>
             <h4 className="font-black text-slate-800 uppercase tracking-widest text-xs mb-2">Saúde da Integração</h4>
             <p className="text-xl font-bold text-slate-900">Sincronizado</p>
             <p className="text-xs text-slate-400 mt-1">Legado via {silo.integrationSettings.protocol}</p>
-            <button className="mt-6 text-blue-600 font-bold text-xs uppercase tracking-widest hover:underline">Ver Logs de Sincronia</button>
+            <button className="mt-6 text-sicredi-600 font-bold text-xs uppercase tracking-widest hover:underline">Ver Logs de Sincronia</button>
         </div>
       </div>
     </div>
@@ -581,12 +581,12 @@ const SiloFiscalTab = ({ user, onRefresh }: { user: User, onRefresh: () => void 
                     <div key={nfe.id} className="bg-white p-6 rounded-[32px] border shadow-sm space-y-4">
                         <div className="flex justify-between items-center">
                             <span className="text-xl font-black text-slate-800">{nfe.plate}</span>
-                            <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest">Em Fila</span>
+                            <span className="bg-sicredi-100 text-sicredi-700 px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest">Em Fila</span>
                         </div>
                         <div className="p-4 bg-slate-50 rounded-2xl text-xs font-bold text-slate-600">
                              Peso NF: {UnitConversionService.formatKg(nfe.estimatedWeightKg)}
                         </div>
-                        <button onClick={() => handleValidateAndDigitize(nfe)} className="w-full bg-blue-600 text-white py-3 rounded-2xl font-black uppercase text-[10px] tracking-widest flex items-center justify-center gap-2">
+                        <button onClick={() => handleValidateAndDigitize(nfe)} className="w-full bg-sicredi-600 text-white py-3 rounded-2xl font-black uppercase text-[10px] tracking-widest flex items-center justify-center gap-2">
                             <Scale size={18}/> Validar Balança
                         </button>
                     </div>
@@ -603,7 +603,7 @@ const SiloComplianceView = ({ user, onRefresh }: any) => (
     <div className="max-w-2xl space-y-6">
         <h2 className="text-2xl font-black tracking-tight text-slate-800">Compliance & Auditoria</h2>
         <div className="bg-white p-8 rounded-[40px] border shadow-sm space-y-8">
-            <div className="flex items-center gap-4 p-6 bg-green-50 rounded-[32px] border border-green-100 text-green-800 text-sm font-bold">
+            <div className="flex items-center gap-4 p-6 bg-sicredi-50 rounded-[32px] border border-sicredi-100 text-sicredi-800 text-sm font-bold">
                 <ShieldCheck size={28}/>
                 <p>O silo opera sob a Regra Canônica de Quilogramas (kg). Conversões visuais são arredondadas para UI, mas o lastro contábil é invariável. Toda movimentação é espelhada no Ledger Universal.</p>
             </div>
@@ -655,7 +655,7 @@ const SiloClientsTab = ({ user, onSelectProducer, onRefresh }: any) => {
                                         <div className="font-mono font-bold text-slate-900">{Math.round(balKg).toLocaleString('pt-BR')} kg</div>
                                         <div className="text-[10px] text-slate-400 font-bold">{UnitConversionService.formatSacas(balKg)}</div>
                                     </td>
-                                    <td className="p-5 text-right text-green-600 font-black">{UnitConversionService.formatBRL(val)}</td>
+                                    <td className="p-5 text-right text-sicredi-600 font-black">{UnitConversionService.formatBRL(val)}</td>
                                     <td className="p-5 text-right">
                                         <button onClick={() => onSelectProducer(p.id)} className="bg-slate-100 text-slate-700 px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-900 hover:text-white transition-colors">Dossiê</button>
                                     </td>
@@ -686,7 +686,7 @@ const ProducerDetailView = ({ producerId, onBack }: any) => {
                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Finanças</p>
                         <div className="space-y-2">
                             <div className="flex justify-between text-xs font-bold"><span className="text-slate-500">Saldo Agro:</span> <span>R$ 15.000</span></div>
-                            <div className="flex justify-between text-xs font-bold"><span className="text-slate-500">Score Interno:</span> <span className="text-green-600">850</span></div>
+                            <div className="flex justify-between text-xs font-bold"><span className="text-slate-500">Score Interno:</span> <span className="text-sicredi-600">850</span></div>
                         </div>
                     </div>
                 </div>

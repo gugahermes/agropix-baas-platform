@@ -4,7 +4,57 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>AgroPix - Fintech & BaaS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Exo+2:wght@600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      /*
+        Paleta e tipografia oficiais do Sicredi (marca.sicredi.com.br):
+        Verde Sicredi Digital #3FA110 (uso em tela) e Verde Escuro #146E37
+        são os dois valores oficiais; o restante da escala 50-900 é
+        interpolado a partir desses dois anchors para se comportar como
+        qualquer outra escala do Tailwind (green-500, blue-600 etc.).
+        Amarelo #FFCD00 é a cor de apoio oficial (usada no card de grãos).
+        Tipografia: Exo 2 para títulos/marca, Nunito para texto de
+        interface — ambas confirmadas no manual de identidade do Sicredi.
+      */
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              sicredi: {
+                50: '#EDF7E7',
+                100: '#D7E6C8',
+                200: '#B9D9A0',
+                300: '#97C878',
+                400: '#6DB94A',
+                500: '#3FA110',
+                600: '#358C0D',
+                700: '#146E37',
+                800: '#0F5A2C',
+                900: '#0B4321',
+                950: '#082916',
+              },
+              sicredigold: {
+                50: '#FFFBEB',
+                100: '#FFF3C4',
+                200: '#FFE988',
+                300: '#FFDE55',
+                500: '#FFCD00',
+                600: '#E6B800',
+                700: '#B38F00',
+                900: '#664F00',
+              },
+            },
+            fontFamily: {
+              sans: ['Nunito', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+              heading: ['Exo 2', 'Nunito', 'ui-sans-serif', 'sans-serif'],
+            },
+          },
+        },
+      };
+    </script>
     <style>
       /* Custom Scrollbar for a premium feel */
       ::-webkit-scrollbar {
@@ -12,14 +62,14 @@
         height: 8px;
       }
       ::-webkit-scrollbar-track {
-        background: #f1f5f9; 
+        background: #f1f5f9;
       }
       ::-webkit-scrollbar-thumb {
-        background: #cbd5e1; 
+        background: #cbd5e1;
         border-radius: 4px;
       }
       ::-webkit-scrollbar-thumb:hover {
-        background: #94a3b8; 
+        background: #94a3b8;
       }
     </style>
   <script type="importmap">
@@ -34,7 +84,7 @@
 }
 </script>
 </head>
-  <body class="bg-slate-50 text-slate-900 font-sans antialiased selection:bg-green-100 selection:text-green-900">
+  <body class="bg-slate-50 text-slate-900 font-sans antialiased selection:bg-sicredi-100 selection:text-sicredi-900">
     <div id="root"></div>
   <script type="module" src="/index.tsx"></script>
 </body>

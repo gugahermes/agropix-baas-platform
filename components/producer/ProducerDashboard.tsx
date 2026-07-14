@@ -120,9 +120,9 @@ const HomeView = ({ user, pushView }: any) => {
         <div className="bg-white p-5 rounded-[32px] border border-slate-100 shadow-sm relative overflow-hidden">
           <div className="flex justify-between items-start mb-1">
             <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Uso Diário Autorizado</span>
-            <div className="flex items-center gap-1.5 bg-green-50 px-2 py-0.5 rounded-full">
-                <div className="w-1 h-1 bg-green-500 rounded-full animate-pulse"></div>
-                <span className="text-[8px] font-black text-green-700 uppercase">Liberado</span>
+            <div className="flex items-center gap-1.5 bg-sicredi-50 px-2 py-0.5 rounded-full">
+                <div className="w-1 h-1 bg-sicredi-500 rounded-full animate-pulse"></div>
+                <span className="text-[8px] font-black text-sicredi-700 uppercase">Liberado</span>
             </div>
           </div>
           <div className="flex items-baseline gap-1.5">
@@ -133,7 +133,7 @@ const HomeView = ({ user, pushView }: any) => {
           </div>
           <div className="mt-3 flex items-center gap-2">
              <div className="flex-1 h-1 bg-slate-100 rounded-full overflow-hidden">
-                <div className="h-full bg-green-500 rounded-full transition-all duration-1000" style={{ width: `${Math.min((usedToday/dailyLimit)*100, 100)}%` }}></div>
+                <div className="h-full bg-sicredi-500 rounded-full transition-all duration-1000" style={{ width: `${Math.min((usedToday/dailyLimit)*100, 100)}%` }}></div>
              </div>
              <span className="text-[8px] font-bold text-slate-400 uppercase">Consumido {(usedToday/dailyLimit*100).toFixed(0)}%</span>
           </div>
@@ -165,7 +165,7 @@ const HomeView = ({ user, pushView }: any) => {
       >
         <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-3">
-                <div className="w-9 h-9 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center">
+                <div className="w-9 h-9 bg-sicredigold-50 text-sicredigold-600 rounded-xl flex items-center justify-center">
                     <Wheat size={18}/>
                 </div>
                 <span className="text-[10px] font-black text-slate-800 uppercase tracking-widest">Grãos Digitalizados (Soja)</span>
@@ -181,7 +181,7 @@ const HomeView = ({ user, pushView }: any) => {
         
         <div className="pt-3 border-t border-slate-50 flex justify-between items-center">
            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Valor Estimado</span>
-           <span className="text-xs font-black text-green-600 tracking-tight">{UnitConversionService.formatBRL(marketValueBrl)}</span>
+           <span className="text-xs font-black text-sicredi-600 tracking-tight">{UnitConversionService.formatBRL(marketValueBrl)}</span>
         </div>
       </div>
 
@@ -252,7 +252,7 @@ const QuotationsListView = ({ user }: { user: User }) => {
                     <div key={idx} className="p-6 flex items-center justify-between hover:bg-slate-50 transition-colors">
                         <div className="flex items-center gap-4">
                             <div className="w-10 h-10 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400">
-                                {q.commodity === CommodityType.SOYBEAN && <Wheat size={20} className="text-amber-600"/>}
+                                {q.commodity === CommodityType.SOYBEAN && <Wheat size={20} className="text-sicredigold-600"/>}
                                 {q.commodity === CommodityType.CORN && <Sprout size={20} className="text-yellow-600"/>}
                                 {q.commodity === CommodityType.WHEAT && <Wheat size={20} className="text-slate-600"/>}
                             </div>
@@ -286,8 +286,8 @@ const QuotationsListView = ({ user }: { user: User }) => {
                 </div>
             </div>
 
-            <div className="p-6 bg-blue-50/50 rounded-[32px] border border-blue-100 flex items-start gap-4 text-blue-900">
-                <Info size={20} className="shrink-0 mt-1 text-blue-600"/>
+            <div className="p-6 bg-sicredi-50/50 rounded-[32px] border border-sicredi-100 flex items-start gap-4 text-sicredi-900">
+                <Info size={20} className="shrink-0 mt-1 text-sicredi-600"/>
                 <p className="text-[10px] font-medium leading-relaxed">
                     Estes preços são atualizados diariamente pelo seu Silo e servem como referência para a liquidez de seus pagamentos.
                 </p>
@@ -348,13 +348,13 @@ const PixAreaView = ({ user, refresh, pushView }: any) => {
         </div>
         <div className="flex-1 flex items-center justify-center relative overflow-hidden">
           <video ref={videoRef} autoPlay playsInline className="w-full h-full object-cover opacity-50" />
-          <div className="absolute w-64 h-64 border-2 border-green-500 rounded-[40px] shadow-[0_0_0_9999px_rgba(0,0,0,0.6)]">
-             <div className="absolute inset-0 border-4 border-green-500 rounded-[40px] animate-pulse"></div>
+          <div className="absolute w-64 h-64 border-2 border-sicredi-500 rounded-[40px] shadow-[0_0_0_9999px_rgba(0,0,0,0.6)]">
+             <div className="absolute inset-0 border-4 border-sicredi-500 rounded-[40px] animate-pulse"></div>
           </div>
         </div>
         <div className="p-10 bg-black flex justify-center">
             {!scanning ? (
-                <button onClick={startCamera} className="bg-green-600 text-white px-10 py-5 rounded-3xl font-black">Ativar Câmera</button>
+                <button onClick={startCamera} className="bg-sicredi-600 text-white px-10 py-5 rounded-3xl font-black">Ativar Câmera</button>
             ) : (
                 <button onClick={() => { stopCamera(); setPixMode('KEY'); alert("Simulado: Fertilizantes S/A - R$ 1.500,00"); }} className="bg-white text-black px-10 py-5 rounded-3xl font-black">Simular Leitura</button>
             )}
@@ -391,7 +391,7 @@ const PixAreaView = ({ user, refresh, pushView }: any) => {
             title="Ler QR Code" 
             sub="Pagar via Pix Scanner" 
             onClick={() => setPixMode('SCAN')}
-            color="bg-blue-600"
+            color="bg-sicredi-600"
         />
 
         <PayOption 
@@ -399,7 +399,7 @@ const PixAreaView = ({ user, refresh, pushView }: any) => {
             title="Pagar com Grão" 
             sub="Débito direto do seu saldo" 
             onClick={() => pushView('PAY_GRAIN')}
-            color="bg-green-600"
+            color="bg-sicredi-600"
         />
 
         <PayOption 
@@ -448,7 +448,7 @@ const PayWithGrainView = ({ user, onBack, refresh }: any) => {
   return (
     <div className="bg-white p-8 rounded-[40px] border shadow-2xl space-y-6 animate-in zoom-in-95 mx-2">
       <div className="text-center space-y-2">
-         <div className="w-20 h-20 bg-green-50 text-green-600 rounded-full flex items-center justify-center mx-auto shadow-inner"><Sprout size={40}/></div>
+         <div className="w-20 h-20 bg-sicredi-50 text-sicredi-600 rounded-full flex items-center justify-center mx-auto shadow-inner"><Sprout size={40}/></div>
          <h3 className="text-2xl font-black text-slate-900 tracking-tight">Pagar com Grão</h3>
          <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest leading-none">A cotação de hoje é {UnitConversionService.formatBRL(quotation.finalPriceSaca)}</p>
       </div>
@@ -459,12 +459,12 @@ const PayWithGrainView = ({ user, onBack, refresh }: any) => {
             <input type="number" value={valBrl} onChange={e => setValBrl(e.target.value)} className="w-full p-5 bg-slate-50 border-none rounded-3xl font-black text-4xl placeholder:text-slate-200 outline-none" placeholder="0,00"/>
         </div>
         
-        <div className="p-6 bg-amber-50 rounded-[28px] border border-amber-100 text-center">
-            <p className="text-[10px] font-black text-amber-600 uppercase tracking-widest mb-1">Impacto em Sacas</p>
-            <p className="text-3xl font-black text-amber-900 tracking-tight">{UnitConversionService.formatSacas(kgDebit)}</p>
+        <div className="p-6 bg-sicredigold-50 rounded-[28px] border border-sicredigold-100 text-center">
+            <p className="text-[10px] font-black text-sicredigold-600 uppercase tracking-widest mb-1">Impacto em Sacas</p>
+            <p className="text-3xl font-black text-sicredigold-900 tracking-tight">{UnitConversionService.formatSacas(kgDebit)}</p>
         </div>
 
-        <button onClick={handlePay} disabled={!valBrl || kgDebit > grainBalanceKg} className="w-full bg-green-600 text-white py-5 rounded-[28px] font-black text-lg shadow-xl shadow-green-100 active:scale-95 transition-all">Confirmar Débito</button>
+        <button onClick={handlePay} disabled={!valBrl || kgDebit > grainBalanceKg} className="w-full bg-sicredi-600 text-white py-5 rounded-[28px] font-black text-lg shadow-xl shadow-sicredi-100 active:scale-95 transition-all">Confirmar Débito</button>
       </div>
     </div>
   );
@@ -500,16 +500,16 @@ const NfeCreateView = ({ onBack, refresh, user }: any) => {
         const rejected = result.status === NFeStatus.REJECTED;
         return (
             <div className="bg-white p-8 rounded-[40px] border shadow-2xl space-y-6 animate-in zoom-in-95 mx-2">
-                <div className={`p-6 rounded-[28px] text-center ${rejected ? 'bg-red-50' : 'bg-green-50'}`}>
+                <div className={`p-6 rounded-[28px] text-center ${rejected ? 'bg-red-50' : 'bg-sicredi-50'}`}>
                     {rejected ? (
                         <XCircleIcon />
                     ) : (
-                        <CheckCircle className="mx-auto text-green-600 mb-2" size={40} />
+                        <CheckCircle className="mx-auto text-sicredi-600 mb-2" size={40} />
                     )}
-                    <p className={`font-black text-lg ${rejected ? 'text-red-700' : 'text-green-700'}`}>
+                    <p className={`font-black text-lg ${rejected ? 'text-red-700' : 'text-sicredi-700'}`}>
                         {rejected ? 'NF-e rejeitada' : 'NF-e Transmitida'}
                     </p>
-                    <span className={`inline-block mt-2 text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full ${result.emissionMode === 'REAL' ? 'bg-blue-600 text-white' : 'bg-amber-100 text-amber-700'}`}>
+                    <span className={`inline-block mt-2 text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full ${result.emissionMode === 'REAL' ? 'bg-sicredi-600 text-white' : 'bg-sicredigold-100 text-sicredigold-700'}`}>
                         {result.emissionMode === 'REAL' ? 'Ambiente SEFAZ (Focus NFe)' : 'Simulação — Focus NFe não configurado'}
                     </span>
                 </div>
@@ -550,10 +550,10 @@ const NfeCreateView = ({ onBack, refresh, user }: any) => {
                     <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">Placa do Veículo</label>
                     <input value={plate} onChange={e => setPlate(e.target.value)} disabled={status === 'TRANSMITTING'} className="w-full p-4 bg-slate-50 border-none rounded-2xl font-black uppercase outline-none disabled:opacity-50" placeholder="ABC-1234"/>
                 </div>
-                <div className="p-5 bg-blue-50 rounded-[24px] text-[10px] font-black text-blue-800 uppercase leading-relaxed tracking-tighter">
+                <div className="p-5 bg-sicredi-50 rounded-[24px] text-[10px] font-black text-sicredi-800 uppercase leading-relaxed tracking-tighter">
                     Ao confirmar, a NF-e será transmitida via SEFAZ (Focus NFe) para autorização de transporte campo-silo.
                 </div>
-                <button onClick={handleEmit} disabled={!kg || !plate || status === 'TRANSMITTING'} className="w-full bg-blue-600 text-white py-5 rounded-[28px] font-black text-lg shadow-xl shadow-blue-100 uppercase tracking-widest active:scale-95 transition-all disabled:opacity-60">
+                <button onClick={handleEmit} disabled={!kg || !plate || status === 'TRANSMITTING'} className="w-full bg-sicredi-600 text-white py-5 rounded-[28px] font-black text-lg shadow-xl shadow-sicredi-100 uppercase tracking-widest active:scale-95 transition-all disabled:opacity-60">
                     {status === 'TRANSMITTING' ? 'Transmitindo...' : 'Transmitir SEFAZ'}
                 </button>
             </div>
@@ -572,7 +572,7 @@ const GrainsListView = ({ user, pushView }: any) => {
 
     return (
         <div className="space-y-5 px-2">
-            <div className="bg-amber-600 p-8 rounded-[48px] text-white shadow-xl shadow-amber-200 flex flex-col items-center text-center relative overflow-hidden">
+            <div className="bg-sicredigold-600 p-8 rounded-[48px] text-white shadow-xl shadow-sicredigold-200 flex flex-col items-center text-center relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-4 opacity-10 rotate-12"><Package size={100}/></div>
                 <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-80 mb-3">Saldo Disponível</p>
                 <h2 className="text-3xl font-black mb-3 leading-none tracking-tighter whitespace-nowrap">{UnitConversionService.formatSacas(grainBalanceKg)}</h2>
@@ -613,7 +613,7 @@ const GrainDetailView = ({ user }: any) => {
                                 <p className="text-[10px] text-slate-400 font-bold uppercase">{new Date(e.timestamp).toLocaleDateString('pt-BR')}</p>
                             </div>
                             <div className="text-right">
-                                <p className={`text-sm font-black ${e.direction === 'CREDIT' ? 'text-green-600' : 'text-slate-900'}`}>
+                                <p className={`text-sm font-black ${e.direction === 'CREDIT' ? 'text-sicredi-600' : 'text-slate-900'}`}>
                                     {e.direction === 'DEBIT' ? '-' : '+'}{Math.round(e.amount).toLocaleString('pt-BR')} kg
                                 </p>
                             </div>
@@ -635,7 +635,7 @@ const ProfileView = ({ user }: any) => (
                 <h2 className="text-2xl font-black text-slate-900 tracking-tighter">{user.name}</h2>
                 <p className="text-xs text-slate-400 font-mono tracking-widest">{user.document}</p>
             </div>
-            <div className="bg-green-50 text-green-700 px-4 py-1.5 rounded-full text-[10px] font-black uppercase border border-green-100">
+            <div className="bg-sicredi-50 text-sicredi-700 px-4 py-1.5 rounded-full text-[10px] font-black uppercase border border-sicredi-100">
                 Conta Verificada
             </div>
         </div>
@@ -683,7 +683,7 @@ const NfeListView = ({ user, pushView }: any) => {
                     </div>
                     <div className="text-right">
                         <p className="text-sm font-black text-slate-900 mb-1">{n.estimatedWeightKg.toLocaleString('pt-BR')} kg</p>
-                        <span className={`text-[8px] font-black uppercase px-2 py-0.5 rounded-full ${n.status === 'CONFIRMED' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}>{NFE_STATUS_LABELS[n.status] || n.status}</span>
+                        <span className={`text-[8px] font-black uppercase px-2 py-0.5 rounded-full ${n.status === 'CONFIRMED' ? 'bg-sicredi-100 text-sicredi-700' : 'bg-sicredi-100 text-sicredi-700'}`}>{NFE_STATUS_LABELS[n.status] || n.status}</span>
                     </div>
                 </div>
             ))}

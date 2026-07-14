@@ -25,12 +25,12 @@ export const Layout: React.FC<LayoutProps> = ({ user, onLogout, children, active
         <div className="max-w-7xl mx-auto px-4 h-full flex items-center justify-between">
           <div className="flex items-center gap-4">
             <button onClick={goHome} className="flex items-center gap-3 active:scale-95 transition-transform">
-              <div className="w-9 h-9 bg-slate-900 rounded-xl flex items-center justify-center shadow-lg p-1.5">
+              <div className="w-9 h-9 bg-sicredi-700 rounded-xl flex items-center justify-center shadow-lg p-1.5">
                 <img src={`${import.meta.env.BASE_URL}logo-icon.png`} alt="AgroPix" className="w-full h-full object-contain" />
               </div>
               <div className="hidden sm:flex flex-col leading-none text-left">
                 <span className="font-black text-slate-900 tracking-tight">AgroPix</span>
-                <span className="text-[9px] font-black text-green-600 uppercase tracking-widest">Fintech</span>
+                <span className="text-[9px] font-black text-sicredi-600 uppercase tracking-widest">Fintech</span>
               </div>
             </button>
           </div>
@@ -38,7 +38,7 @@ export const Layout: React.FC<LayoutProps> = ({ user, onLogout, children, active
           <div className="flex items-center gap-3">
             <button className="p-2.5 bg-slate-50 text-slate-400 rounded-full hover:text-slate-600 transition-colors relative">
               <Bell size={20} />
-              <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-green-500 rounded-full border-2 border-white"></span>
+              <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-sicredi-500 rounded-full border-2 border-white"></span>
             </button>
             
             <div className="h-6 w-px bg-slate-200 mx-1"></div>
@@ -83,7 +83,7 @@ export const Layout: React.FC<LayoutProps> = ({ user, onLogout, children, active
                   <button
                     onClick={() => setActiveTab('PAY_PIX')}
                     aria-label="Pagar"
-                    className="w-16 h-16 bg-slate-900 text-white rounded-full flex flex-col items-center justify-center shadow-xl shadow-slate-400 active:scale-90 transition-transform border-4 border-white cursor-pointer"
+                    className="w-16 h-16 bg-sicredi-700 text-white rounded-full flex flex-col items-center justify-center shadow-xl shadow-sicredi-800/40 active:scale-90 transition-transform border-4 border-white cursor-pointer"
                   >
                     <Scan size={28} strokeWidth={2.5}/>
                   </button>
@@ -118,7 +118,7 @@ const BottomNavItem = ({ active, icon, label, onClick }: any) => (
   >
     <div className="relative">
         {icon}
-        {active && <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-slate-900 rounded-full"></div>}
+        {active && <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-sicredi-600 rounded-full"></div>}
     </div>
     <span className={`text-[8px] font-black uppercase tracking-tighter ${active ? 'opacity-100' : 'opacity-60'}`}>
       {label}
