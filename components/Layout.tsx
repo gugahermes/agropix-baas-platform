@@ -60,11 +60,11 @@ export const Layout: React.FC<LayoutProps> = ({ user, onLogout, children, active
 
       {/* Bottom Navigation - Producer Only (Mobile) */}
       {isProducer && setActiveTab && (
-        <div className="md:hidden fixed bottom-0 left-0 right-0 z-50" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
+        <div className="fixed bottom-0 left-0 right-0 z-50" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
            {/* Shadow Overlay */}
            <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-slate-900/5 to-transparent pointer-events-none"></div>
 
-           <nav className="relative bg-white/95 backdrop-blur-md border-t border-slate-100 px-4 pt-2 pb-3 flex justify-around items-center shadow-[0_-8px_24px_rgba(0,0,0,0.05)]">
+           <nav className="relative max-w-md mx-auto bg-white/95 backdrop-blur-md border-t border-slate-100 md:border-x md:rounded-t-3xl px-4 pt-2 pb-3 flex justify-around items-center shadow-[0_-8px_24px_rgba(0,0,0,0.05)]">
               <BottomNavItem
                 active={activeTab === 'HOME'}
                 icon={<Home size={22}/>}

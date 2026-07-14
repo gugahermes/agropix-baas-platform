@@ -725,7 +725,7 @@ const NfeListView = ({ user, pushView }: any) => {
     return (
         <div className="space-y-3 px-2">
             <div className="flex justify-between items-center mb-6 px-2">
-                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{nfes.length} Documentos</span>
+                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{nfes.length} {nfes.length === 1 ? 'Documento' : 'Documentos'}</span>
                 <button onClick={() => pushView('NFE_NEW')} className="bg-slate-900 text-white font-black text-[10px] uppercase px-4 py-2 rounded-full tracking-widest active:scale-90 transition-transform">Nova Nota</button>
             </div>
             {nfes.map(n => (

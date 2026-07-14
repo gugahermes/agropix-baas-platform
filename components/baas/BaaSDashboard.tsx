@@ -42,6 +42,12 @@ const INTEGRATION_TYPE_LABELS: Record<string, string> = {
   OTHER: 'Outro',
 };
 
+const MERCHANT_STATUS_LABELS: Record<string, { label: string; className: string }> = {
+  ACTIVE: { label: 'Liquidando', className: 'bg-sicredi-100 text-sicredi-700' },
+  PENDING: { label: 'Pendente', className: 'bg-sicredigold-100 text-sicredigold-700' },
+  BLOCKED: { label: 'Bloqueado', className: 'bg-red-100 text-red-700' },
+};
+
 const NFE_STATUS_LABELS: Record<string, string> = {
   DRAFT: 'RASCUNHO',
   ISSUED: 'EMITIDA',
@@ -487,7 +493,9 @@ const MerchantsView = () => {
                                 <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">{m.category}</p>
                             </div>
                         </div>
-                        <span className="bg-sicredi-100 text-sicredi-700 text-[10px] px-2 py-0.5 rounded font-black uppercase">Liquidando</span>
+                        <span className={`text-[10px] px-2 py-0.5 rounded font-black uppercase ${MERCHANT_STATUS_LABELS[m.status]?.className || 'bg-slate-100 text-slate-600'}`}>
+                            {MERCHANT_STATUS_LABELS[m.status]?.label || m.status}
+                        </span>
                     </div>
                 ))}
             </div>

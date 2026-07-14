@@ -230,7 +230,7 @@ const OrchestratorCoreTab = () => {
         <div className="space-y-6">
             <div className="bg-slate-900 text-white p-6 rounded-xl shadow-lg">
                 <h3 className="text-lg font-bold mb-2 flex items-center gap-2">
-                    <Lock size={20} className="text-sicredi-400"/> Core Logic Flow
+                    <Lock size={20} className="text-sicredi-400"/> Fluxo de Autorização
                 </h3>
                 <p className="text-slate-300 max-w-2xl text-sm">
                     Visualização do fluxo de autorização de pagamentos. A transação só ocorre se passar por todos os Gates (Colateral, Limite, Liquidez Master).
@@ -249,7 +249,7 @@ const OrchestratorCoreTab = () => {
                         <div key={link.id} className="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
                             <div className="flex justify-between mb-6">
                                 <h4 className="font-bold text-slate-800">Link: {link.id}</h4>
-                                <span className="bg-sicredi-100 text-sicredi-800 px-2 py-1 rounded text-xs font-bold">ACTIVE</span>
+                                <span className="bg-sicredi-100 text-sicredi-800 px-2 py-1 rounded text-xs font-bold">ATIVO</span>
                             </div>
 
                             <div className="flex items-center justify-between text-sm">
@@ -258,7 +258,7 @@ const OrchestratorCoreTab = () => {
                                     <div className="w-10 h-10 mx-auto bg-sicredigold-100 text-sicredigold-600 rounded-full flex items-center justify-center mb-2">
                                         1
                                     </div>
-                                    <p className="font-bold text-slate-700">Agro Wallet</p>
+                                    <p className="font-bold text-slate-700">Carteira Agro</p>
                                     <p className="text-slate-500">{UnitConversionService.formatTon(agroBal)}</p>
                                     <CheckCircle size={16} className="mx-auto mt-1 text-sicredi-500" />
                                 </div>
@@ -270,8 +270,8 @@ const OrchestratorCoreTab = () => {
                                     <div className={`w-10 h-10 mx-auto rounded-full flex items-center justify-center mb-2 ${limitOk ? 'bg-sicredi-100 text-sicredi-600' : 'bg-red-100 text-red-600'}`}>
                                         2
                                     </div>
-                                    <p className="font-bold text-slate-700">Daily Limit</p>
-                                    <p className="text-slate-500">{Math.round((link.usedTodayBrl/link.dailyLimitBrl)*100)}% Used</p>
+                                    <p className="font-bold text-slate-700">Limite Diário</p>
+                                    <p className="text-slate-500">{Math.round((link.usedTodayBrl/link.dailyLimitBrl)*100)}% Utilizado</p>
                                     {limitOk ? <CheckCircle size={16} className="mx-auto mt-1 text-sicredi-500" /> : <AlertTriangle size={16} className="mx-auto mt-1 text-red-500" />}
                                 </div>
 
@@ -282,8 +282,8 @@ const OrchestratorCoreTab = () => {
                                     <div className={`w-10 h-10 mx-auto rounded-full flex items-center justify-center mb-2 ${liquidityOk ? 'bg-sicredi-100 text-sicredi-600' : 'bg-red-100 text-red-600'}`}>
                                         3
                                     </div>
-                                    <p className="font-bold text-slate-700">Silo Master</p>
-                                    <p className="text-slate-500">Liquidity OK</p>
+                                    <p className="font-bold text-slate-700">Liquidez do Silo</p>
+                                    <p className="text-slate-500">{liquidityOk ? 'Liquidez OK' : 'Sem Liquidez'}</p>
                                     {liquidityOk ? <CheckCircle size={16} className="mx-auto mt-1 text-sicredi-500" /> : <AlertTriangle size={16} className="mx-auto mt-1 text-red-500" />}
                                 </div>
 
@@ -294,8 +294,8 @@ const OrchestratorCoreTab = () => {
                                     <div className="w-10 h-10 mx-auto bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mb-2">
                                         4
                                     </div>
-                                    <p className="font-bold text-slate-700">Payment</p>
-                                    <p className="text-slate-500">Split Executed</p>
+                                    <p className="font-bold text-slate-700">Pagamento</p>
+                                    <p className="text-slate-500">Split Executado</p>
                                 </div>
                             </div>
                         </div>
@@ -351,10 +351,57 @@ const LimitsTab = () => {
     )
 }
 
-const LogsTab = () => (
-    <div className="p-8 text-center text-slate-400 border-2 border-dashed border-slate-200 rounded-xl">
-        <FileText size={48} className="mx-auto mb-4 opacity-20"/>
-        <h3 className="text-lg font-bold">Logs de Auditoria Bancária</h3>
-        <p>Histórico completo de alterações de limites e aprovações de orquestração.</p>
-    </div>
-)
+const SOURCE_LABELS: Record<string, string> = {
+    PIX_IN: 'Pix Recebido',
+    PIX_OUT: 'Pix Enviado',
+    PIX_SPLIT_FEE: 'Split de Taxa Pix',
+    FEE_PLATFORM_SHARE: 'Receita AgroPix',
+    FEE_SILO_SHARE: 'Receita do Silo',
+    GRAIN_DIGITIZATION: 'Digitalização de Grão',
+    GRAIN_PAYMENT: 'Pagamento com Grão',
+    INTERNAL_TRANSFER: 'Transferência Interna',
+    FEE: 'Taxa',
+    ADJUSTMENT: 'Ajuste',
+};
+
+const LogsTab = () => {
+    const entries = [...ledgerService.getAllEntries()].reverse().slice(0, 30);
+    return (
+        <div className="space-y-4">
+            <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm text-slate-500">
+                Logs de auditoria bancária derivados do ledger universal — cada aprovação de orquestração gera um evento aqui.
+            </div>
+            {entries.length === 0 ? (
+                <div className="p-8 text-center text-slate-400 border-2 border-dashed border-slate-200 rounded-xl">
+                    <FileText size={48} className="mx-auto mb-4 opacity-20"/>
+                    <h3 className="text-lg font-bold">Nenhum evento registrado ainda</h3>
+                </div>
+            ) : (
+                <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                    <table className="w-full text-sm text-left">
+                        <thead className="bg-slate-100 text-slate-600 uppercase text-[10px] font-black tracking-widest border-b">
+                            <tr>
+                                <th className="p-4">Quando</th>
+                                <th className="p-4">Tipo</th>
+                                <th className="p-4">Descrição</th>
+                                <th className="p-4 text-right">Valor</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-100">
+                            {entries.map(e => (
+                                <tr key={e.id} className="hover:bg-slate-50">
+                                    <td className="p-4 text-slate-400 font-mono text-xs">{new Date(e.timestamp).toLocaleString('pt-BR')}</td>
+                                    <td className="p-4 font-bold text-slate-700">{SOURCE_LABELS[e.source] || e.source}</td>
+                                    <td className="p-4 text-slate-500">{e.description}</td>
+                                    <td className={`p-4 text-right font-black ${e.direction === 'CREDIT' ? 'text-sicredi-600' : 'text-slate-700'}`}>
+                                        {e.currency === Currency.BRL ? UnitConversionService.formatBRL(e.amount) : `${e.amount.toLocaleString('pt-BR')} kg`}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            )}
+        </div>
+    );
+}
